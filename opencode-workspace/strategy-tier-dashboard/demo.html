@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>次高战略看板</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ========== 基础重置 ========== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { font-size: 16px; }
+    body { font-family: 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif; background: #EDEEF0; color: #0B0D0F; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    ul, ol { list-style: none; }
+    a { text-decoration: none; color: inherit; }
+    button { border: none; background: none; font-family: inherit; cursor: pointer; }
+
+    /* ========== 变量 ========== */
+    :root {
+      --brand: #0073E5; --brand-light: #E6F2FF; --brand-dark: #0052A3;
+      --text-5: #0B0D0F; --text-4: #576675; --text-3: #8A99A8; --text-1: #FFFFFF;
+      --fill-1: #F7F7F8; --fill-2: #F1F1F4; --white: #FFFFFF;
+      --success: #2EB82E; --danger: #F53D3D; --divider: #F0F0F0;
+      --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px;
+      --din: 'Inter', 'DIN Alternate', 'Helvetica Neue', sans-serif;
+    }
+
+    /* ========== 页面容器 ========== */
+    .page { max-width: 430px; margin: 0 auto; min-height: 100vh; background: var(--fill-1); position: relative; box-shadow: 0 0 24px rgba(0,0,0,.06); }
+
+    /* ========== 顶部导航栏 ========== */
+    .nav-bar { height: 44px; display: flex; align-items: center; justify-content: center; background: var(--white); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--divider); }
+    .nav-bar .back { position: absolute; left: 16px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+    .nav-bar .back svg { width: 20px; height: 20px; }
+    .nav-bar .title { font-size: 17px; font-weight: 600; color: var(--text-5); }
+
+    /* ========== 页面级一级 Tab ========== */
+    .page-tabs { display: flex; background: var(--white); border-bottom: 1px solid var(--divider); position: sticky; top: 44px; z-index: 99; }
+    .page-tab { flex: 1; height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; transition: color .2s; position: relative; }
+    .page-tab .tab-main { font-size: 15px; font-weight: 500; color: var(--text-4); line-height: 1.1; }
+    .page-tab .tab-sub { font-size: 10px; color: var(--text-3); line-height: 1.1; }
+    .page-tab.active .tab-main { color: var(--brand); font-weight: 600; }
+    .page-tab.active .tab-sub { color: var(--brand); }
+    .page-tab .indicator { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24px; height: 2px; border-radius: 1px; background: var(--brand); opacity: 0; transition: opacity .2s; }
+    .page-tab.active .indicator { opacity: 1; }
+
+    /* ========== Banner 区域（Hero 图层 + 正文内容流，高 200px） ========== */
+    .banner { position: relative; height: 200px; overflow: hidden; }
+    .banner-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .banner-mask { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,30,70,.30) 0%, rgba(0,30,70,.55) 100%); }
+    .banner-content { position: relative; z-index: 2; height: 100%; padding: 22px 16px 16px; display: flex; flex-direction: column; justify-content: space-between; }
+    .banner-title { font-size: 18px; font-weight: 500; color: var(--text-1); }
+    .time-pills { display: flex; gap: 8px; }
+    .time-pill { padding: 5px 14px; border-radius: 999px; font-size: 13px; cursor: pointer; transition: all .2s; }
+    .time-pill.active { background: var(--white); color: var(--brand); font-weight: 500; }
+    .time-pill:not(.active) { background: transparent; border: 1px solid rgba(255,255,255,.5); color: rgba(255,255,255,.92); }
+    .banner-time { display: inline-flex; align-items: center; gap: 4px; color: rgba(255,255,255,.85); font-size: 12px; cursor: pointer; }
+    .banner-time svg { width: 13px; height: 13px; }
+
+    /* ========== 汇总卡片 ========== */
+    .summary-card { background: var(--white); border-radius: 8px; margin: 12px 16px; padding: 14px 12px; }
+    .summary-metrics { display: flex; }
+    .summary-metric { flex: 1; text-align: center; position: relative; }
+    .summary-metric:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 1px; height: 32px; background: var(--divider); }
+    .summary-metric .metric-label { font-size: 11px; color: var(--text-3); margin-bottom: 6px; }
+    .summary-metric .metric-value { font-size: 19px; font-weight: 500; color: var(--text-5); font-family: var(--din); line-height: 1.1; }
+    .summary-metric .metric-unit { font-size: 10px; color: var(--text-3); margin-left: 1px; font-weight: 400; }
+    .summary-metric .metric-change { font-size: 11px; margin-top: 4px; font-family: var(--din); }
+    .metric-change.up { color: var(--success); }
+    .metric-change.down { color: var(--danger); }
+    .metric-change.flat { color: var(--text-3); }
+
+    /* ========== 组织切换分段器 ========== */
+    .org-switch { display: flex; margin: 0 16px 12px; border: 1px solid var(--brand); border-radius: 4px; overflow: hidden; }
+    .org-switch-item { flex: 1; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: all .2s; }
+    .org-switch-item.active { background: var(--brand); color: var(--text-1); font-weight: 500; }
+    .org-switch-item:not(.active) { color: var(--brand); }
+
+    /* ========== 指标切换（3 新三品表） ========== */
+    .metric-switch { display: flex; gap: 6px; margin: 0 16px 10px; overflow-x: auto; scrollbar-width: none; }
+    .metric-switch::-webkit-scrollbar { display: none; }
+    .metric-pill { flex-shrink: 0; padding: 5px 12px; border-radius: 999px; font-size: 12px; cursor: pointer; transition: all .2s; background: var(--fill-2); color: var(--text-4); }
+    .metric-pill.active { background: var(--brand-light); color: var(--brand); font-weight: 500; }
+
+    /* ========== 数据表格（通用） ========== */
+    .data-table { background: var(--white); border-radius: 8px; margin: 0 16px 16px; overflow: hidden; }
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .table-scroll::-webkit-scrollbar { display: none; }
+    table { width: 100%; border-collapse: collapse; }
+    table.generic { min-width: 560px; }
+    table.matrix { min-width: 520px; }
+    th { background: var(--brand-light); font-size: 11px; font-weight: 400; color: var(--text-4); padding: 9px 6px; text-align: center; white-space: nowrap; }
+    th.group-h { font-size: 12px; font-weight: 500; color: var(--text-5); border-right: 1px solid var(--divider); }
+    th.group-h:last-of-type { border-right: none; }
+    td { font-size: 13px; color: var(--text-5); padding: 11px 6px; text-align: center; border-bottom: 1px solid var(--divider); white-space: nowrap; font-family: var(--din); }
+    tr:last-child td { border-bottom: none; }
+    th.sticky, td.sticky { position: sticky; left: 0; z-index: 2; text-align: left; font-family: inherit; }
+    th.sticky { background: var(--brand-light); }
+    td.sticky { background: var(--white); }
+    table.matrix td.sticky, table.matrix th.sticky { box-shadow: 4px 0 6px -4px rgba(0,0,0,.08); }
+    .org-cell { display: flex; align-items: center; }
+    .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 500; margin-right: 6px; flex-shrink: 0; font-family: var(--din); }
+    .rank-badge.top3 { background: var(--brand); color: var(--text-1); }
+    .rank-badge.normal { background: var(--fill-2); color: var(--text-4); }
+    .org-name { font-size: 13px; color: var(--text-5); }
+    .progress-bar { height: 6px; background: var(--fill-2); border-radius: 3px; overflow: hidden; width: 56px; margin: 0 auto; }
+    .progress-fill { height: 100%; background: var(--brand); border-radius: 3px; }
+    .text-up { color: var(--success); }
+    .text-down { color: var(--danger); }
+    .text-flat { color: var(--text-3); }
+
+    /* ========== 表格注脚 ========== */
+    .table-note { margin: 0 16px 16px; font-size: 11px; color: var(--text-3); line-height: 1.6; }
+
+    /* ========== 底部提示 ========== */
+    .bottom-hint { text-align: center; padding: 8px 16px 20px; color: var(--text-3); font-size: 12px; }
+
+    /* ========== 时间选择器抽屉 ========== */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 200; opacity: 0; visibility: hidden; transition: all .3s; }
+    .modal-overlay.show { opacity: 1; visibility: visible; }
+    .modal-drawer { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 430px; background: var(--white); border-radius: 12px 12px 0 0; padding: 20px 16px 32px; z-index: 201; transition: transform .3s ease; }
+    .modal-drawer.show { transform: translateX(-50%) translateY(0); }
+    .modal-title { font-size: 16px; font-weight: 500; color: var(--text-5); margin-bottom: 16px; text-align: center; }
+    .date-pickers { display: flex; gap: 8px; margin-bottom: 20px; }
+    .date-select { flex: 1; height: 120px; border: 1px solid var(--divider); border-radius: 8px; overflow: hidden; position: relative; }
+    .date-select .sel-list { height: 100%; overflow-y: auto; scrollbar-width: none; }
+    .date-select .sel-list::-webkit-scrollbar { display: none; }
+    .date-select .sel-item { height: 40px; line-height: 40px; text-align: center; font-size: 15px; color: var(--text-4); cursor: pointer; }
+    .date-select .sel-item.active { color: var(--brand); font-weight: 600; background: var(--brand-light); }
+    .modal-actions { display: flex; gap: 12px; }
+    .modal-btn { flex: 1; height: 44px; border-radius: 22px; font-size: 16px; font-weight: 500; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .modal-btn.cancel { background: var(--fill-2); color: var(--text-5); }
+    .modal-btn.confirm { background: var(--brand); color: var(--text-1); }
+
+    /* ========== Toast ========== */
+    .toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,.7); color: #fff; padding: 10px 20px; border-radius: 8px; font-size: 14px; z-index: 300; opacity: 0; visibility: hidden; transition: all .3s; }
+    .toast.show { opacity: 1; visibility: visible; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- 顶部导航栏 -->
+    <div class="nav-bar">
+      <div class="back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0B0D0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </div>
+      <div class="title">次高战略看板</div>
+    </div>
+
+    <!-- 页面级一级 Tab -->
+    <div class="page-tabs">
+      <div class="page-tab active" data-tab="overall"><span class="tab-main">整体</span><span class="tab-sub">1+3+N</span><div class="indicator"></div></div>
+      <div class="page-tab" data-tab="g1"><span class="tab-main">1</span><span class="tab-sub">SuperX</span><div class="indicator"></div></div>
+      <div class="page-tab" data-tab="g3"><span class="tab-main">3</span><span class="tab-sub">新三品</span><div class="indicator"></div></div>
+      <div class="page-tab" data-tab="gN"><span class="tab-sub" style="font-size:15px;font-weight:500;color:var(--text-4)">N</span><span class="tab-sub">其他</span><div class="indicator"></div></div>
+    </div>
+
+    <!-- Banner 区域（Hero 背景图 + 正文内容流） -->
+    <div class="banner">
+      <img class="banner-bg" src="https://ai-1259627966.cos.ap-shanghai.myqcloud.com/%E5%89%8D%E7%AB%AF%E8%B5%84%E6%BA%90%E7%9B%AE%E5%BD%95/image-2%403x.png" alt="次高战略看板 Banner"/>
+      <div class="banner-mask"></div>
+      <div class="banner-content">
+        <div class="banner-title" id="bannerTitle">次高战略看板 · 整体</div>
+        <div class="time-pills">
+          <div class="time-pill" data-time="day">当日</div>
+          <div class="time-pill active" data-time="month">当月</div>
+          <div class="time-pill" data-time="ytd">年累计</div>
+        </div>
+        <div class="banner-time" id="dateText">
+          <span>2026-06-29</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 汇总卡片 -->
+    <div class="summary-card">
+      <div class="summary-metrics" id="summaryMetrics"></div>
+    </div>
+
+    <!-- 组织切换分段器 -->
+    <div class="org-switch">
+      <div class="org-switch-item active" data-org="bu">分事业部</div>
+      <div class="org-switch-item" data-org="mc">分营销中心</div>
+    </div>
+
+    <!-- 指标切换（仅 3 新三品表显示） -->
+    <div class="metric-switch" id="metricSwitch" style="display:none;">
+      <div class="metric-pill active" data-metric="cur">当期</div>
+      <div class="metric-pill" data-metric="prev">同期</div>
+      <div class="metric-pill" data-metric="diff">同比增减</div>
+      <div class="metric-pill" data-metric="rate">同比增幅</div>
+    </div>
+
+    <!-- 数据表格 -->
+    <div class="data-table" id="dataTable"></div>
+    <div class="table-note" id="tableNote"></div>
+
+    <!-- 底部提示 -->
+    <div class="bottom-hint">— 数据为示例，仅用于演示 —</div>
+  </div>
+
+  <!-- 时间选择器抽屉 -->
+  <div class="modal-overlay" id="overlay"></div>
+  <div class="modal-drawer" id="dateDrawer">
+    <div class="modal-title">选择日期</div>
+    <div class="date-pickers">
+      <div class="date-select"><div class="sel-list" id="yearList"></div></div>
+      <div class="date-select"><div class="sel-list" id="monthList"></div></div>
+      <div class="date-select"><div class="sel-list" id="dayList"></div></div>
+    </div>
+    <div class="modal-actions">
+      <div class="modal-btn cancel" id="dateCancel">取消</div>
+      <div class="modal-btn confirm" id="dateConfirm">确认</div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ========== 数据 ========== */
+    // 每个组织：g1/g3/gN 的当期(c)与同期(p)，单位千升；overall = g1+g3+gN
+    const ORGS = {
+      bu: [
+        { name: '华东事业部', g1:{c:3200,p:2850}, g3:{c:2400,p:2100}, gN:{c:6800,p:6500} },
+        { name: '华南事业部', g1:{c:2950,p:2700}, g3:{c:2100,p:2300}, gN:{c:6200,p:6000} },
+        { name: '华西事业部', g1:{c:2600,p:2400}, g3:{c:1850,p:1600}, gN:{c:5500,p:5400} },
+        { name: '华北事业部', g1:{c:2800,p:3100}, g3:{c:1950,p:1700}, gN:{c:5800,p:5600} },
+        { name: '华中事业部', g1:{c:2400,p:2200}, g3:{c:1650,p:1500}, gN:{c:5100,p:5200} }
+      ],
+      mc: [
+        { name: '江浙营销中心', g1:{c:1120,p:980}, g3:{c:840,p:720}, gN:{c:2380,p:2280} },
+        { name: '沪杭营销中心', g1:{c:980,p:920}, g3:{c:760,p:680}, gN:{c:2100,p:2050} },
+        { name: '粤海营销中心', g1:{c:1050,p:960}, g3:{c:720,p:800}, gN:{c:2240,p:2120} },
+        { name: '川渝营销中心', g1:{c:860,p:820}, g3:{c:610,p:540}, gN:{c:1860,p:1820} },
+        { name: '京津冀营销中心', g1:{c:940,p:1050}, g3:{c:680,p:600}, gN:{c:1980,p:1900} },
+        { name: '鲁豫营销中心', g1:{c:820,p:760}, g3:{c:570,p:520}, gN:{c:1760,p:1800} },
+        { name: '湘鄂营销中心', g1:{c:780,p:740}, g3:{c:540,p:490}, gN:{c:1680,p:1720} },
+        { name: '闽赣营销中心', g1:{c:700,p:680}, g3:{c:510,p:470}, gN:{c:1540,p:1600} }
+      ]
+    };
+
+    // 3 新三品 品种×规格 列定义与拆分比（当期/同期各一套，使各单元格增幅有差异）
+    const MATRIX_COLS = [
+      { brand:'雪花金冠', spec:'500瓶' },
+      { brand:'雪花金冠', spec:'460听' },
+      { brand:'德式小麦', spec:'500瓶' },
+      { brand:'德式小麦', spec:'460听' },
+      { brand:'勇闯超干', spec:'500瓶' },
+      { brand:'勇闯超干', spec:'460听' }
+    ];
+    const RATIO_CUR  = [0.225, 0.125, 0.180, 0.125, 0.225, 0.120];
+    const RATIO_PREV = [0.240, 0.130, 0.190, 0.130, 0.200, 0.110];
+
+    const TIME_FACTOR = { day: 0.045, month: 1, ytd: 6.2 };
+    const TIME_LABEL  = { day:'当日', month:'当月', ytd:'年累计' };
+    const TAB_LABEL   = { overall:'整体', g1:'1 SuperX', g3:'3 新三品', gN:'N 其他' };
+    const METRIC_LABEL= { cur:'当期', prev:'同期', diff:'同比增减', rate:'同比增幅' };
+
+    /* ========== 状态 ========== */
+    const state = { tab:'overall', time:'month', org:'bu', metric:'cur', date:'2026-06-29' };
+
+    /* ========== 工具 ========== */
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+    function fmt(n){ return n.toLocaleString('zh',{minimumFractionDigits:1, maximumFractionDigits:1}); }
+    function r1(n){ return Math.round(n*10)/10; }
+    function valByMetric(c, p, metric){
+      const diff = r1(c - p);
+      if(metric==='cur') return { v: r1(c), cls:'' };
+      if(metric==='prev') return { v: r1(p), cls:'' };
+      if(metric==='diff') return { v: diff, cls: diff>0?'up':(diff<0?'down':'flat') };
+      const rate = p===0 ? null : r1((c-p)/p*100);
+      return { v: rate, cls: rate===null?'flat':(rate>0?'up':(rate<0?'down':'flat')), isPct:true, na: rate===null };
+    }
+    function clsOf(diff){ return diff>0?'up':(diff<0?'down':'flat'); }
+    function signed(v, isPct, na){
+      if(na) return '-';
+      const s = v>0?'+':'';
+      return s + (isPct? v.toFixed(1)+'%' : fmt(v));
+    }
+
+    // 取某组织在某战略群的当期/同期（已按时间口径缩放）
+    function getBase(org, tab){
+      let c, p;
+      if(tab==='overall'){ c = org.g1.c+org.g3.c+org.gN.c; p = org.g1.p+org.g3.p+org.gN.p; }
+      else { c = org[tab].c; p = org[tab].p; }
+      const f = TIME_FACTOR[state.time];
+      return { c: r1(c*f), p: r1(p*f) };
+    }
+
+    /* ========== 渲染：汇总卡 ========== */
+    function renderSummary(){
+      const list = ORGS[state.org];
+      let tc=0, tp=0;
+      list.forEach(o=>{ const b=getBase(o,state.tab); tc+=b.c; tp+=b.p; });
+      tc=r1(tc); tp=r1(tp);
+      const diff=r1(tc-tp);
+      const rate = tp===0?null:r1(diff/tp*100);
+      const items = [
+        { label:'当期', value:fmt(tc), unit:'千升', change:'', cls:'' },
+        { label:'同期', value:fmt(tp), unit:'千升', change:'', cls:'' },
+        { label:'同比增减', value:signed(diff,false,false), unit:'千升', cls:clsOf(diff) },
+        { label:'同比增幅', value: rate===null?'-':signed(rate,true,false), unit: rate===null?'':'', cls: rate===null?'flat':clsOf(rate) }
+      ];
+      $('#summaryMetrics').innerHTML = items.map(m=>`
+        <div class="summary-metric">
+          <div class="metric-label">${m.label}</div>
+          <div class="metric-value ${m.cls}">${m.value}${m.unit?`<span class="metric-unit">${m.unit}</span>`:''}</div>
+          <div class="metric-change ${m.cls}">${m.change||'&nbsp;'}</div>
+        </div>`).join('');
+    }
+
+    /* ========== 渲染：通用表格（整体/1/N） ========== */
+    function renderGenericTable(){
+      const list = ORGS[state.org].map(o=>{ const b=getBase(o,state.tab); return { name:o.name, c:b.c, p:b.p, diff:r1(b.c-b.p) }; });
+      list.sort((a,b)=>b.c-a.c);
+      const posDiffSum = list.reduce((s,o)=> s + (o.diff>0?o.diff:0), 0); // 正增量合计为分母
+      const curSum = list.reduce((s,o)=>s+o.c,0);
+      const rows = list.map((o,i)=>{
+        const rate = o.p===0?null:r1(o.diff/o.p*100);
+        // 增量贡献 = 该组织同比正增量占整体正增量合计；无正增量时退回当期占比
+        const contribPct = posDiffSum>0 ? r1((o.diff>0?o.diff:0)/posDiffSum*100) : r1(o.c/curSum*100);
+        const barW = Math.max(2, Math.min(100, contribPct));
+        const rankCls = i<3?'top3':'normal';
+        const rateText = rate===null?'-':signed(rate,true,false);
+        return `<tr>
+          <td class="sticky"><div class="org-cell"><span class="rank-badge ${rankCls}">${i+1}</span><span class="org-name">${o.name}</span></div></td>
+          <td>${fmt(o.c)}</td>
+          <td>${fmt(o.p)}</td>
+          <td class="${clsOf(o.diff)}">${signed(o.diff,false,false)}</td>
+          <td class="${rate===null?'text-flat':clsOf(rate)}">${rateText}</td>
+          <td><div class="progress-bar"><div class="progress-fill" style="width:${barW}%"></div></div></td>
+        </tr>`;
+      }).join('');
+      $('#dataTable').innerHTML = `<div class="table-scroll"><table class="generic">
+        <thead><tr>
+          <th class="sticky">组织</th><th>当期</th><th>同期</th><th>同比增减</th><th>同比增幅</th><th>增量贡献</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`;
+      $('#tableNote').textContent = '单位：千升；排名按当期降序；增量贡献 = 该组织同比正增量占整体正增量合计的比例。';
+    }
+
+    /* ========== 渲染：3 新三品二维表 ========== */
+    function renderMatrixTable(){
+      const list = ORGS[state.org].map(o=>{
+        const b = getBase(o,'g3');
+        const cells = MATRIX_COLS.map((col,idx)=>{
+          const c = r1(b.c * RATIO_CUR[idx]);
+          const p = r1(b.p * RATIO_PREV[idx]);
+          return { ...col, c, p };
+        });
+        return { name:o.name, c:b.c, p:b.p, cells };
+      });
+      list.sort((a,b)=>b.c-a.c);
+      const m = state.metric;
+      const groups = [ {brand:'雪花金冠', range:[0,2]}, {brand:'德式小麦', range:[2,4]}, {brand:'勇闯超干', range:[4,6]} ];
+      const groupHeader = groups.map(g=>`<th class="group-h" colspan="2">${g.brand}</th>`).join('');
+      const specHeader = MATRIX_COLS.map(c=>`<th>${c.spec}</th>`).join('');
+      const rows = list.map((o,i)=>{
+        const rankCls = i<3?'top3':'normal';
+        const cellHtml = o.cells.map(cell=>{
+          const r = valByMetric(cell.c, cell.p, m);
+          const txt = r.na?'-':signed(r.v, r.isPct, r.na);
+          return `<td class="${r.cls}">${txt}</td>`;
+        }).join('');
+        const tot = valByMetric(o.c, o.p, m);
+        const totTxt = tot.na?'-':signed(tot.v, tot.isPct, tot.na);
+        return `<tr>
+          <td class="sticky"><div class="org-cell"><span class="rank-badge ${rankCls}">${i+1}</span><span class="org-name">${o.name}</span></div></td>
+          ${cellHtml}
+          <td class="${tot.cls}" style="font-weight:500">${totTxt}</td>
+        </tr>`;
+      }).join('');
+      $('#dataTable').innerHTML = `<div class="table-scroll"><table class="matrix">
+        <thead>
+          <tr>
+            <th class="sticky" rowspan="2">组织</th>
+            ${groupHeader}
+            <th rowspan="2">合计</th>
+          </tr>
+          <tr>${specHeader}</tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table></div>`;
+      $('#tableNote').textContent = `单位：千升；当前指标：${METRIC_LABEL[m]}；排名按新三品当期合计降序；列按 品种 × 规格（500瓶/460听）二维展开。`;
+    }
+
+    /* ========== 主渲染 ========== */
+    function render(){
+      $('#bannerTitle').textContent = '次高战略看板 · ' + TAB_LABEL[state.tab];
+      $$('.time-pill').forEach(p=>p.classList.toggle('active', p.dataset.time===state.time));
+      $$('.org-switch-item').forEach(p=>p.classList.toggle('active', p.dataset.org===state.org));
+      $$('.page-tab').forEach(p=>p.classList.toggle('active', p.dataset.tab===state.tab));
+      const isG3 = state.tab==='g3';
+      $('#metricSwitch').style.display = isG3 ? 'flex' : 'none';
+      if(isG3){
+        $$('.metric-pill').forEach(p=>p.classList.toggle('active', p.dataset.metric===state.metric));
+      }
+      renderSummary();
+      if(isG3) renderMatrixTable(); else renderGenericTable();
+    }
+
+    /* ========== 事件 ========== */
+    $$('.page-tab').forEach(p=>p.addEventListener('click',()=>{ state.tab=p.dataset.tab; render(); }));
+    $$('.time-pill').forEach(p=>p.addEventListener('click',()=>{ state.time=p.dataset.time; render(); }));
+    $$('.org-switch-item').forEach(p=>p.addEventListener('click',()=>{ state.org=p.dataset.org; render(); }));
+    $$('.metric-pill').forEach(p=>p.addEventListener('click',()=>{ state.metric=p.dataset.metric; render(); }));
+
+    /* ========== 时间选择器 ========== */
+    let pickDate = { y:2026, m:6, d:29 };
+    function buildList(el, arr, cur){
+      el.innerHTML = arr.map(v=>`<div class="sel-item ${v===cur?'active':''}" data-v="${v}">${v}</div>`).join('');
+      const active = el.querySelector('.sel-item.active');
+      if(active) el.scrollTop = active.offsetTop - 40*1;
+    }
+    function openDatePicker(){
+      buildList($('#yearList'), [2026,2025,2024], pickDate.y);
+      buildList($('#monthList'), Array.from({length:12},(_,i)=>i+1), pickDate.m);
+      buildList($('#dayList'), Array.from({length:30},(_,i)=>i+1), pickDate.d);
+      $('#overlay').classList.add('show');
+      $('#dateDrawer').classList.add('show');
+    }
+    function closeDatePicker(){ $('#overlay').classList.remove('show'); $('#dateDrawer').classList.remove('show'); }
+    $('#dateText').addEventListener('click', openDatePicker);
+    $('#overlay').addEventListener('click', closeDatePicker);
+    $('#dateCancel').addEventListener('click', closeDatePicker);
+    $('#dateConfirm').addEventListener('click',()=>{
+      state.date = `${pickDate.y}-${String(pickDate.m).padStart(2,'0')}-${String(pickDate.d).padStart(2,'0')}`;
+      $('#dateText').firstElementChild.textContent = state.date;
+      closeDatePicker();
+      showToast('已按 ' + state.date + ' 刷新');
+      render();
+    });
+    ['yearList','monthList','dayList'].forEach(id=>{
+      $('#'+id).addEventListener('click',e=>{
+        const item = e.target.closest('.sel-item');
+        if(!item) return;
+        const val = +item.dataset.v;
+        if(id==='yearList') pickDate.y=val;
+        if(id==='monthList') pickDate.m=val;
+        if(id==='dayList') pickDate.d=val;
+        $('#'+id).querySelectorAll('.sel-item').forEach(x=>x.classList.toggle('active', +x.dataset.v===val));
+      });
+    });
+
+    function showToast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1500); }
+
+    /* 初始化 */
+    render();
+  </script>
+</body>
+</html>

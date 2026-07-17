@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>销量快报</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 顶部导航 -->
+        <header class="header">
+            <div class="header-left">
+                <span class="back-arrow">←</span>
+                <span class="header-title">销量快报</span>
+            </div>
+            <div class="header-right">
+                <span class="menu-dots">···</span>
+            </div>
+        </header>
+
+        <!-- 一级维度标签 -->
+        <div class="dimension-tabs">
+            <div class="tabs-container">
+                <div class="tab active" data-dimension="grade">分档次</div>
+                <div class="tab" data-dimension="brand">分品牌</div>
+                <div class="tab" data-dimension="product">分主力品种</div>
+                <div class="tab" data-dimension="other">其他</div>
+            </div>
+        </div>
+
+        <!-- 二级页签（仅分档次显示） -->
+        <div class="sub-tabs" id="subTabs">
+            <div class="sub-tabs-container">
+                <div class="sub-tab active" data-sub="all">分档次生意表现</div>
+                <div class="sub-tab" data-sub="premium">普高及以上</div>
+                <div class="sub-tab" data-sub="high">次高</div>
+                <div class="sub-tab" data-sub="medium">中档</div>
+                <div class="sub-tab" data-sub="mainstream">大主流</div>
+            </div>
+        </div>
+
+        <!-- Banner区域 -->
+        <div class="banner">
+            <div class="banner-content">
+                <h1 class="banner-title" id="bannerTitle">全国分档次生意表现</h1>
+                <div class="banner-meta">
+                    <span class="banner-date" id="bannerDate">2025年2月</span>
+                    <button class="nav-btn" id="navBtn">导航</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 时间切换 -->
+        <div class="time-tabs">
+            <div class="time-tab" data-time="day">当日</div>
+            <div class="time-tab active" data-time="month">月累计</div>
+            <div class="time-tab" data-time="year">年累计</div>
+        </div>
+
+        <!-- 数据汇总卡片 -->
+        <div class="summary-card">
+            <div class="summary-label" id="summaryLabel">🏷 分档次销量表现</div>
+            <div class="summary-value" id="summaryValue">1,663,393 KL</div>
+            <div class="summary-changes">
+                <span class="change-item">
+                    <span class="change-label">同比增减</span>
+                    <span class="change-value positive" id="summaryChange">+90,134</span>
+                </span>
+                <span class="change-item">
+                    <span class="change-label">同比增幅</span>
+                    <span class="change-value positive" id="summaryGrowth">+6.0%</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- 组织层级切换 -->
+        <div class="org-tabs">
+            <div class="org-tab active" data-org="division">事业部</div>
+            <div class="org-tab" data-org="center">营销中心</div>
+            <div class="org-tab" data-org="region">销售大区</div>
+        </div>
+
+        <!-- 数据表格 -->
+        <div class="data-table-container">
+            <table class="data-table" id="dataTable">
+                <thead>
+                    <tr>
+                        <th class="col-rank">排名</th>
+                        <th class="col-org">组织</th>
+                        <th class="col-current">当期</th>
+                        <th class="col-period">同期</th>
+                        <th class="col-change">同比增减</th>
+                        <th class="col-growth">同比增幅</th>
+                        <th class="col-contrib">增量贡献</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- 动态生成 -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 底部引导 -->
+        <div class="bottom-guide">
+            <span>↑ 上滑查看下一组数据</span>
+        </div>
+
+        <!-- 🏠 快捷入口 -->
+        <div class="fab-menu" id="fabMenu">
+            <div class="fab-button" id="fabButton">🏠</div>
+            <div class="fab-options" id="fabOptions">
+                <div class="fab-option" data-action="explain">数据说明</div>
+                <div class="fab-option" data-action="feedback">意见反馈</div>
+                <div class="fab-option" data-action="back">返回工作台</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 下拉刷新指示器 -->
+    <div class="pull-refresh" id="pullRefresh">
+        <div class="refresh-spinner"></div>
+        <span>下拉刷新</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

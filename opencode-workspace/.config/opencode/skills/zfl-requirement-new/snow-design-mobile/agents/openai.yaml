@@ -1,0 +1,3 @@
+display_name: "Snow Design Mobile"
+short_description: "华润雪花移动端页面规范助手"
+default_prompt: "使用 $snow-design-mobile 根据 PRD 生成或检查一个 Snow Mobile 内部业务 APP 页面。"

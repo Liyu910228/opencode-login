@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>销量快报</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ========== 基础重置 ========== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { font-size: 16px; }
+    body { font-family: 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif; background: #F7F7F8; color: #0B0D0F; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    ul, ol { list-style: none; }
+    a { text-decoration: none; color: inherit; }
+    button { border: none; background: none; font-family: inherit; cursor: pointer; }
+    input, select { font-family: inherit; outline: none; }
+
+    /* ========== 变量 ========== */
+    :root {
+      --brand: #0073E5; --brand-light: #E6F2FF; --brand-dark: #0052A3;
+      --text-5: #0B0D0F; --text-4: #576675; --text-3: #8A99A8; --text-1: #FFFFFF;
+      --fill-1: #F7F7F8; --fill-2: #F1F1F4; --white: #FFFFFF;
+      --success: #2EB82E; --danger: #F53D3D; --divider: #F0F0F0;
+      --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px;
+    }
+
+    /* ========== 页面容器 ========== */
+    .page { max-width: 430px; margin: 0 auto; min-height: 100vh; background: #F7F7F8; position: relative; }
+
+    /* ========== 顶部导航栏 ========== */
+    .nav-bar {
+      height: 44px; display: flex; align-items: center; justify-content: center;
+      background: var(--white); position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid var(--divider);
+    }
+    .nav-bar .back { position: absolute; left: 16px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+    .nav-bar .back svg { width: 20px; height: 20px; }
+    .nav-bar .title { font-size: 17px; font-weight: 600; color: var(--text-5); }
+    .nav-bar .more { position: absolute; right: 16px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+    .nav-bar .more svg { width: 20px; height: 20px; }
+
+    /* ========== 页面级 Tab ========== */
+    .page-tabs { display: flex; background: var(--white); border-bottom: 1px solid var(--divider); position: sticky; top: 44px; z-index: 99; }
+    .page-tab { flex: 1; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text-4); position: relative; cursor: pointer; transition: color .2s; }
+    .page-tab.active { color: var(--brand); font-weight: 500; }
+    .page-tab .indicator { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24px; height: 2px; border-radius: 1px; background: var(--brand); opacity: 0; transition: opacity .2s; }
+    .page-tab.active .indicator { opacity: 1; }
+
+    /* ========== Banner 区域 ========== */
+    .banner { background: linear-gradient(135deg, #0073E5, #0052A3); padding: 20px 16px 16px; position: relative; }
+    .banner-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .banner-title { font-size: 18px; font-weight: 500; color: var(--text-1); }
+    .banner-nav-btn { display: flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,.4); color: var(--text-1); font-size: 12px; cursor: pointer; }
+    .banner-nav-btn svg { width: 14px; height: 14px; }
+    .banner-bottom { display: flex; align-items: center; justify-content: space-between; }
+    .banner-time { display: flex; align-items: center; gap: 4px; color: rgba(255,255,255,.8); font-size: 12px; cursor: pointer; }
+    .banner-time svg { width: 14px; height: 14px; }
+    .banner-filter-btn { display: flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,.4); color: var(--text-1); font-size: 12px; cursor: pointer; }
+    .banner-filter-btn.hidden { display: none; }
+
+    /* ========== 子维度横滑导航 ========== */
+    .sub-nav { display: flex; gap: 8px; padding: 12px 16px; background: var(--white); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .sub-nav::-webkit-scrollbar { display: none; }
+    .sub-nav-item { flex-shrink: 0; padding: 6px 14px; border-radius: 999px; font-size: 14px; cursor: pointer; transition: all .2s; white-space: nowrap; }
+    .sub-nav-item.active { background: var(--brand-light); color: var(--brand); font-weight: 500; }
+    .sub-nav-item:not(.active) { background: var(--fill-2); color: var(--text-4); }
+
+    /* ========== 汇总卡片 ========== */
+    .summary-card { background: var(--white); border-radius: 8px; margin: 12px 16px; padding: 16px; }
+    .summary-card .card-title { font-size: 14px; font-weight: 500; color: var(--text-5); margin-bottom: 12px; }
+    .summary-metrics { display: flex; justify-content: space-around; }
+    .summary-metric { text-align: center; }
+    .summary-metric .metric-label { font-size: 12px; color: var(--text-3); margin-bottom: 4px; }
+    .summary-metric .metric-value { font-size: 20px; font-weight: 500; color: var(--text-5); font-family: 'Inter', 'DIN Alternate', 'Helvetica Neue', sans-serif; }
+    .summary-metric .metric-change { font-size: 12px; margin-top: 4px; }
+    .summary-metric .metric-change.up { color: var(--success); }
+    .summary-metric .metric-change.down { color: var(--danger); }
+
+    /* ========== 档次结构卡片 ========== */
+    .grade-card { background: var(--white); border-radius: 8px; margin: 12px 16px; padding: 16px; }
+    .grade-card .card-title { font-size: 14px; font-weight: 500; color: var(--text-5); margin-bottom: 12px; }
+    .grade-row { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--divider); }
+    .grade-row:last-child { border-bottom: none; }
+    .grade-name { width: 80px; font-size: 14px; color: var(--text-5); flex-shrink: 0; }
+    .grade-data { flex: 1; display: flex; justify-content: space-around; }
+    .grade-data-item { text-align: center; }
+    .grade-data-item .label { font-size: 11px; color: var(--text-3); }
+    .grade-data-item .value { font-size: 13px; font-weight: 500; color: var(--text-5); font-family: 'Inter', 'DIN Alternate', 'Helvetica Neue', sans-serif; }
+    .grade-diff { font-size: 13px; font-weight: 500; width: 60px; text-align: right; flex-shrink: 0; }
+    .grade-diff.up { color: var(--success); }
+    .grade-diff.down { color: var(--danger); }
+
+    /* ========== 条形图 ========== */
+    .bar-chart { background: var(--white); border-radius: 8px; margin: 12px 16px; padding: 16px; }
+    .bar-chart .card-title { font-size: 14px; font-weight: 500; color: var(--text-5); margin-bottom: 12px; }
+    .bar-item { margin-bottom: 16px; }
+    .bar-item:last-child { margin-bottom: 0; }
+    .bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .bar-name { font-size: 14px; color: var(--text-5); }
+    .bar-value { font-size: 14px; font-weight: 500; color: var(--text-5); font-family: 'Inter', 'DIN Alternate', 'Helvetica Neue', sans-serif; }
+    .bar-track { height: 8px; background: var(--fill-2); border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
+    .bar-fill { height: 100%; background: var(--brand); border-radius: 4px; transition: width .3s ease; }
+    .bar-change { font-size: 12px; }
+    .bar-change.up { color: var(--success); }
+    .bar-change.down { color: var(--danger); }
+
+    /* ========== 组织切换页签 ========== */
+    .org-switch { display: flex; margin: 0 16px 12px; border: 1px solid var(--brand); border-radius: 4px; overflow: hidden; }
+    .org-switch-item { flex: 1; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: all .2s; }
+    .org-switch-item.active { background: var(--brand); color: var(--text-1); font-weight: 500; }
+    .org-switch-item:not(.active) { color: var(--brand); }
+
+    /* ========== 数据表格 ========== */
+    .data-table { background: var(--white); border-radius: 8px; margin: 0 16px 16px; overflow: hidden; }
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .table-scroll::-webkit-scrollbar { display: none; }
+    table { width: 100%; border-collapse: collapse; min-width: 600px; }
+    th { background: var(--brand-light); font-size: 11px; font-weight: 400; color: var(--text-4); padding: 10px 8px; text-align: center; white-space: nowrap; }
+    td { font-size: 13px; color: var(--text-5); padding: 12px 8px; text-align: center; border-bottom: 1px solid var(--divider); white-space: nowrap; font-family: 'Inter', 'DIN Alternate', 'Helvetica Neue', sans-serif; }
+    td:first-child { text-align: left; font-family: inherit; }
+    .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 500; margin-right: 6px; }
+    .rank-badge.top3 { background: var(--brand); color: var(--text-1); }
+    .rank-badge.normal { background: var(--fill-2); color: var(--text-4); }
+    .progress-bar { height: 6px; background: var(--fill-2); border-radius: 3px; overflow: hidden; width: 60px; margin: 0 auto; }
+    .progress-fill { height: 100%; background: var(--brand); border-radius: 3px; }
+    .text-up { color: var(--success); }
+    .text-down { color: var(--danger); }
+
+    /* ========== 分品牌双表 ========== */
+    .brand-section { margin-bottom: 16px; }
+    .brand-section-title { font-size: 14px; font-weight: 500; color: var(--text-5); margin: 0 16px 8px; }
+
+    /* ========== 底部连续浏览提示 ========== */
+    .bottom-hint { text-align: center; padding: 16px; color: var(--text-3); font-size: 12px; }
+    .bottom-hint .hint-text { margin-bottom: 4px; }
+    .bottom-hint .hint-page { font-size: 11px; }
+
+    /* ========== 筛选弹窗 ========== */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 200; opacity: 0; visibility: hidden; transition: all .3s; }
+    .modal-overlay.show { opacity: 1; visibility: visible; }
+    .modal-drawer { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); border-radius: 12px 12px 0 0; padding: 20px 16px 32px; z-index: 201; transform: translateY(100%); transition: transform .3s ease; max-width: 430px; left: 50%; transform: translateX(-50%) translateY(100%); }
+    .modal-overlay.show + .modal-drawer, .modal-drawer.show { transform: translateX(-50%) translateY(0); }
+    .modal-title { font-size: 16px; font-weight: 500; color: var(--text-5); margin-bottom: 16px; text-align: center; }
+    .modal-options { margin-bottom: 20px; }
+    .modal-option { padding: 14px 16px; border-radius: 8px; font-size: 15px; color: var(--text-5); cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: background .2s; }
+    .modal-option:hover { background: var(--fill-1); }
+    .modal-option.selected { color: var(--brand); font-weight: 500; }
+    .modal-option .check { width: 20px; height: 20px; }
+    .modal-option .check svg { width: 20px; height: 20px; }
+    .modal-actions { display: flex; gap: 12px; }
+    .modal-btn { flex: 1; height: 44px; border-radius: 22px; font-size: 16px; font-weight: 500; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .modal-btn.cancel { background: var(--fill-2); color: var(--text-5); }
+    .modal-btn.confirm { background: var(--brand); color: var(--text-1); }
+
+    /* ========== 导航菜单弹窗 ========== */
+    .nav-menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 200; opacity: 0; visibility: hidden; transition: all .3s; }
+    .nav-menu-overlay.show { opacity: 1; visibility: visible; }
+    .nav-menu { position: fixed; top: 0; right: 0; bottom: 0; width: 280px; background: var(--white); z-index: 201; transform: translateX(100%); transition: transform .3s ease; }
+    .nav-menu.show { transform: translateX(0); }
+    .nav-menu-header { padding: 20px 16px 12px; border-bottom: 1px solid var(--divider); }
+    .nav-menu-title { font-size: 16px; font-weight: 500; color: var(--text-5); }
+    .nav-menu-list { padding: 8px 0; }
+    .nav-menu-item { padding: 14px 16px; font-size: 15px; color: var(--text-5); cursor: pointer; transition: background .2s; }
+    .nav-menu-item:hover { background: var(--fill-1); }
+    .nav-menu-item.active { color: var(--brand); font-weight: 500; background: var(--brand-light); }
+
+    /* ========== 内容区 ========== */
+    .content-area { padding-bottom: 20px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ========== 空状态 ========== */
+    .empty-state { text-align: center; padding: 40px 16px; color: var(--text-3); }
+    .empty-state svg { width: 48px; height: 48px; margin-bottom: 12px; opacity: .5; }
+
+    /* ========== 加载状态 ========== */
+    .loading { text-align: center; padding: 20px; color: var(--text-3); font-size: 14px; }
+    .loading::after { content: ''; display: inline-block; width: 16px; height: 16px; border: 2px solid var(--brand-light); border-top-color: var(--brand); border-radius: 50%; animation: spin .8s linear infinite; margin-left: 8px; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ========== Toast ========== */
+    .toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,.7); color: #fff; padding: 10px 20px; border-radius: 8px; font-size: 14px; z-index: 300; opacity: 0; visibility: hidden; transition: all .3s; }
+    .toast.show { opacity: 1; visibility: visible; }
+
+    /* ========== 双维度汇总卡片（分品牌） ========== */
+    .dual-summary { background: var(--white); border-radius: 8px; margin: 12px 16px; padding: 16px; }
+    .dual-summary .card-title { font-size: 14px; font-weight: 500; color: var(--text-5); margin-bottom: 12px; }
+    .dual-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--divider); }
+    .dual-row:last-child { border-bottom: none; }
+    .dual-label { font-size: 14px; color: var(--text-5); }
+    .dual-value { font-size: 14px; font-weight: 500; color: var(--text-5); font-family: 'Inter', 'DIN Alternate', 'Helvetica Neue', sans-serif; }
+    .dual-change { font-size: 12px; }
+    .dual-change.up { color: var(--success); }
+    .dual-change.down { color: var(--danger); }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- 顶部导航栏 -->
+    <div class="nav-bar">
+      <div class="back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0B0D0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </div>
+      <div class="title">销量快报</div>
+      <div class="more">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0B0D0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      </div>
+    </div>
+
+    <!-- 页面级 Tab -->
+    <div class="page-tabs">
+      <div class="page-tab active" data-tab="grade"><span>分档次</span><div class="indicator"></div></div>
+      <div class="page-tab" data-tab="brand"><span>分品牌</span><div class="indicator"></div></div>
+      <div class="page-tab" data-tab="main"><span>分主力品种</span><div class="indicator"></div></div>
+      <div class="page-tab" data-tab="other"><span>其他</span><div class="indicator"></div></div>
+    </div>
+
+    <!-- ========== 分档次 Tab ========== -->
+    <div class="tab-content active" id="tab-grade">
+      <!-- Banner -->
+      <div class="banner">
+        <div class="banner-top">
+          <div class="banner-title" id="grade-banner-title">全国分档次生意表现</div>
+          <div class="banner-nav-btn" onclick="openNavMenu('grade')">
+            <span>导航</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+        <div class="banner-bottom">
+          <div class="banner-time">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="grade-time">2026年6月</span>
+          </div>
+          <div class="banner-filter-btn" id="grade-filter-btn" onclick="openFilter('grade')">
+            <span>档次筛选</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+      </div>
+      <!-- 子维度导航 -->
+      <div class="sub-nav" id="grade-sub-nav">
+        <div class="sub-nav-item active" data-sub="overview">分档次生意表现</div>
+        <div class="sub-nav-item" data-sub="high">普高及以上生意表现</div>
+        <div class="sub-nav-item" data-sub="sub-high">次高生意表现</div>
+        <div class="sub-nav-item" data-sub="mid">中档生意表现</div>
+        <div class="sub-nav-item" data-sub="mainstream">大主流生意表现</div>
+      </div>
+      <!-- 内容区 -->
+      <div class="content-area" id="grade-content">
+        <!-- 总览 -->
+        <div class="sub-content active" data-sub-content="overview">
+          <div class="summary-card">
+            <div class="card-title">当日销量</div>
+            <div class="summary-metrics">
+              <div class="summary-metric">
+                <div class="metric-label">全国（KL）</div>
+                <div class="metric-value">1,285.6</div>
+              </div>
+              <div class="summary-metric">
+                <div class="metric-label">同比增减</div>
+                <div class="metric-value">+133.3</div>
+                <div class="metric-change up">+11.6%</div>
+              </div>
+            </div>
+          </div>
+          <div class="grade-card">
+            <div class="card-title">全国产品档次结构</div>
+            <div class="grade-row">
+              <div class="grade-name">普高及以上</div>
+              <div class="grade-data">
+                <div class="grade-data-item"><div class="label">当期占比</div><div class="value">42.5%</div></div>
+                <div class="grade-data-item"><div class="label">同期占比</div><div class="value">38.2%</div></div>
+              </div>
+              <div class="grade-diff up">+4.3%</div>
+            </div>
+            <div class="grade-row">
+              <div class="grade-name">次高</div>
+              <div class="grade-data">
+                <div class="grade-data-item"><div class="label">当期占比</div><div class="value">28.3%</div></div>
+                <div class="grade-data-item"><div class="label">同期占比</div><div class="value">30.1%</div></div>
+              </div>
+              <div class="grade-diff down">-1.8%</div>
+            </div>
+            <div class="grade-row">
+              <div class="grade-name">中档</div>
+              <div class="grade-data">
+                <div class="grade-data-item"><div class="label">当期占比</div><div class="value">18.5%</div></div>
+                <div class="grade-data-item"><div class="label">同期占比</div><div class="value">19.6%</div></div>
+              </div>
+              <div class="grade-diff down">-1.1%</div>
+            </div>
+            <div class="grade-row">
+              <div class="grade-name">大主流</div>
+              <div class="grade-data">
+                <div class="grade-data-item"><div class="label">当期占比</div><div class="value">10.7%</div></div>
+                <div class="grade-data-item"><div class="label">同期占比</div><div class="value">12.1%</div></div>
+              </div>
+              <div class="grade-diff down">-1.4%</div>
+            </div>
+          </div>
+          <div class="org-switch">
+            <div class="org-switch-item active" data-org="dept">事业部</div>
+            <div class="org-switch-item" data-org="center">营销中心</div>
+          </div>
+          <div class="data-table">
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>组织排名</th><th>当期</th><th>同期</th><th>同比增减</th><th>同比增幅</th><th>增量贡献</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="rank-badge top3">1</span>华东事业部</td><td>285.6</td><td>256.3</td><td class="text-up">+29.3</td><td class="text-up">+11.4%</td><td><div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">2</span>华南事业部</td><td>198.5</td><td>178.2</td><td class="text-up">+20.3</td><td class="text-up">+11.4%</td><td><div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">3</span>华北事业部</td><td>156.3</td><td>148.2</td><td class="text-up">+8.1</td><td class="text-up">+5.5%</td><td><div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge normal">4</span>西南事业部</td><td>112.8</td><td>105.6</td><td class="text-up">+7.2</td><td class="text-up">+6.8%</td><td><div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge normal">5</span>华中事业部</td><td>98.5</td><td>92.1</td><td class="text-up">+6.4</td><td class="text-up">+6.9%</td><td><div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- 单品 -->
+        <div class="sub-content" data-sub-content="high">
+          <div class="summary-card">
+            <div class="card-title">普高及以上销量表现</div>
+            <div class="summary-metrics">
+              <div class="summary-metric">
+                <div class="metric-label">全国（KL）</div>
+                <div class="metric-value">546.8</div>
+              </div>
+              <div class="summary-metric">
+                <div class="metric-label">同比增减</div>
+                <div class="metric-value">+89.2</div>
+                <div class="metric-change up">+19.5%</div>
+              </div>
+            </div>
+          </div>
+          <div class="org-switch">
+            <div class="org-switch-item active" data-org="dept">事业部</div>
+            <div class="org-switch-item" data-org="center">营销中心</div>
+          </div>
+          <div class="data-table">
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>组织排名</th><th>当期</th><th>同期</th><th>同比增减</th><th>同比增幅</th><th>增量贡献</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="rank-badge top3">1</span>华东事业部</td><td>128.5</td><td>105.2</td><td class="text-up">+23.3</td><td class="text-up">+22.1%</td><td><div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">2</span>华南事业部</td><td>98.6</td><td>82.5</td><td class="text-up">+16.1</td><td class="text-up">+19.5%</td><td><div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">3</span>华北事业部</td><td>76.3</td><td>65.8</td><td class="text-up">+10.5</td><td class="text-up">+16.0%</td><td><div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="sub-content" data-sub-content="sub-high">
+          <div class="summary-card">
+            <div class="card-title">次高销量表现</div>
+            <div class="summary-metrics">
+              <div class="summary-metric">
+                <div class="metric-label">全国（KL）</div>
+                <div class="metric-value">364.2</div>
+              </div>
+              <div class="summary-metric">
+                <div class="metric-label">同比增减</div>
+                <div class="metric-value">-12.5</div>
+                <div class="metric-change down">-3.3%</div>
+              </div>
+            </div>
+          </div>
+          <div class="org-switch">
+            <div class="org-switch-item active" data-org="dept">事业部</div>
+            <div class="org-switch-item" data-org="center">营销中心</div>
+          </div>
+          <div class="data-table">
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>组织排名</th><th>当期</th><th>同期</th><th>同比增减</th><th>同比增幅</th><th>增量贡献</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="rank-badge top3">1</span>华东事业部</td><td>85.2</td><td>88.5</td><td class="text-down">-3.3</td><td class="text-down">-3.7%</td><td><div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">2</span>华南事业部</td><td>72.1</td><td>75.3</td><td class="text-down">-3.2</td><td class="text-down">-4.2%</td><td><div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">3</span>华北事业部</td><td>58.6</td><td>60.2</td><td class="text-down">-1.6</td><td class="text-down">-2.7%</td><td><div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="sub-content" data-sub-content="mid">
+          <div class="summary-card">
+            <div class="card-title">中档销量表现</div>
+            <div class="summary-metrics">
+              <div class="summary-metric">
+                <div class="metric-label">全国（KL）</div>
+                <div class="metric-value">237.8</div>
+              </div>
+              <div class="summary-metric">
+                <div class="metric-label">同比增减</div>
+                <div class="metric-value">-8.6</div>
+                <div class="metric-change down">-3.5%</div>
+              </div>
+            </div>
+          </div>
+          <div class="org-switch">
+            <div class="org-switch-item active" data-org="dept">事业部</div>
+            <div class="org-switch-item" data-org="center">营销中心</div>
+          </div>
+          <div class="data-table">
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>组织排名</th><th>当期</th><th>同期</th><th>同比增减</th><th>同比增幅</th><th>增量贡献</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="rank-badge top3">1</span>华东事业部</td><td>55.8</td><td>58.2</td><td class="text-down">-2.4</td><td class="text-down">-4.1%</td><td><div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">2</span>华南事业部</td><td>48.2</td><td>50.1</td><td class="text-down">-1.9</td><td class="text-down">-3.8%</td><td><div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">3</span>华北事业部</td><td>42.5</td><td>43.8</td><td class="text-down">-1.3</td><td class="text-down">-3.0%</td><td><div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="sub-content" data-sub-content="mainstream">
+          <div class="summary-card">
+            <div class="card-title">大主流销量表现</div>
+            <div class="summary-metrics">
+              <div class="summary-metric">
+                <div class="metric-label">全国（KL）</div>
+                <div class="metric-value">137.6</div>
+              </div>
+              <div class="summary-metric">
+                <div class="metric-label">同比增减</div>
+                <div class="metric-value">-15.2</div>
+                <div class="metric-change down">-9.9%</div>
+              </div>
+            </div>
+          </div>
+          <div class="org-switch">
+            <div class="org-switch-item active" data-org="dept">事业部</div>
+            <div class="org-switch-item" data-org="center">营销中心</div>
+          </div>
+          <div class="data-table">
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>组织排名</th><th>当期</th><th>同期</th><th>同比增减</th><th>同比增幅</th><th>增量贡献</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="rank-badge top3">1</span>华东事业部</td><td>32.5</td><td>35.8</td><td class="text-down">-3.3</td><td class="text-down">-9.2%</td><td><div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">2</span>华南事业部</td><td>28.1</td><td>31.2</td><td class="text-down">-3.1</td><td class="text-down">-9.9%</td><td><div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">3</span>华北事业部</td><td>22.6</td><td>25.1</td><td class="text-down">-2.5</td><td class="text-down">-10.0%</td><td><div class="progress-bar"><div class="progress-fill" style="width:35%"></div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-hint">
+          <div class="hint-text">上滑查看【普高及以上生意表现】</div>
+          <div class="hint-page">1 / 5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 分品牌 Tab ========== -->
+    <div class="tab-content" id="tab-brand">
+      <div class="banner">
+        <div class="banner-top">
+          <div class="banner-title">全国分品牌生意表现</div>
+          <div class="banner-nav-btn" onclick="openNavMenu('brand')">
+            <span>导航</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+        <div class="banner-bottom">
+          <div class="banner-time">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span>2026年6月</span>
+          </div>
+        </div>
+      </div>
+      <div class="dual-summary">
+        <div class="card-title">分品牌汇总</div>
+        <div class="dual-row">
+          <div class="dual-label">中国品牌</div>
+          <div class="dual-value">856.3 万千升</div>
+          <div class="dual-change up">+9.5%</div>
+        </div>
+        <div class="dual-row">
+          <div class="dual-label">国际品牌</div>
+          <div class="dual-value">429.3 万千升</div>
+          <div class="dual-change up">+16.0%</div>
+        </div>
+      </div>
+      <div class="org-switch">
+        <div class="org-switch-item active" data-org="dept">事业部</div>
+        <div class="org-switch-item" data-org="center">营销中心</div>
+      </div>
+      <div class="brand-section">
+        <div class="brand-section-title">中国品牌</div>
+        <div class="data-table">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>组织排名</th><th>当期</th><th>同期</th><th>同比增减</th><th>同比增幅</th><th>增量贡献</th></tr></thead>
+              <tbody>
+                <tr><td><span class="rank-badge top3">1</span>华东事业部</td><td>185.6</td><td>168.2</td><td class="text-up">+17.4</td><td class="text-up">+10.3%</td><td><div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div></td></tr>
+                <tr><td><span class="rank-badge top3">2</span>华南事业部</td><td>142.3</td><td>128.5</td><td class="text-up">+13.8</td><td class="text-up">+10.7%</td><td><div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div></td></tr>
+                <tr><td><span class="rank-badge top3">3</span>华北事业部</td><td>118.5</td><td>108.2</td><td class="text-up">+10.3</td><td class="text-up">+9.5%</td><td><div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="brand-section">
+        <div class="brand-section-title">国际品牌</div>
+        <div class="data-table">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>组织排名</th><th>当期</th><th>同期</th><th>同比增减</th><th>同比增幅</th><th>增量贡献</th></tr></thead>
+              <tbody>
+                <tr><td><span class="rank-badge top3">1</span>华东事业部</td><td>98.5</td><td>82.3</td><td class="text-up">+16.2</td><td class="text-up">+19.7%</td><td><div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div></td></tr>
+                <tr><td><span class="rank-badge top3">2</span>华南事业部</td><td>75.2</td><td>65.8</td><td class="text-up">+9.4</td><td class="text-up">+14.3%</td><td><div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div></td></tr>
+                <tr><td><span class="rank-badge top3">3</span>华北事业部</td><td>62.1</td><td>54.2</td><td class="text-up">+7.9</td><td class="text-up">+14.6%</td><td><div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 分主力品种 Tab ========== -->
+    <div class="tab-content" id="tab-main">
+      <div class="banner">
+        <div class="banner-top">
+          <div class="banner-title" id="main-banner-title">全国分主力品种生意表现</div>
+          <div class="banner-nav-btn" onclick="openNavMenu('main')">
+            <span>导航</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+        <div class="banner-bottom">
+          <div class="banner-time">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="main-time">2026年6月</span>
+          </div>
+          <div class="banner-filter-btn" id="main-filter-btn" onclick="openFilter('main')">
+            <span>品种筛选</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="sub-nav" id="main-sub-nav">
+        <div class="sub-nav-item active" data-sub="overview">分主力品种生意表现</div>
+        <div class="sub-nav-item" data-sub="heineken">喜力生意表现</div>
+        <div class="sub-nav-item" data-sub="chunsheng">纯生生意表现</div>
+        <div class="sub-nav-item" data-sub="superx">superX生意表现</div>
+        <div class="sub-nav-item" data-sub="laoxue">老雪生意表现</div>
+        <div class="sub-nav-item" data-sub="hongjue">红爵生意表现</div>
+        <div class="sub-nav-item" data-sub="yongchuang">勇闯系列生意表现</div>
+      </div>
+      <div class="content-area" id="main-content">
+        <div class="sub-content active" data-sub-content="overview">
+          <div class="bar-chart">
+            <div class="card-title">主力品种销量占比</div>
+            <div class="bar-item">
+              <div class="bar-header"><span class="bar-name">喜力</span><span class="bar-value">33.4%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
+              <div class="bar-change up">+11.4%</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-header"><span class="bar-name">老雪</span><span class="bar-value">23.2%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:69%"></div></div>
+              <div class="bar-change up">+11.4%</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-header"><span class="bar-name">雪花纯生</span><span class="bar-value">18.3%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:55%"></div></div>
+              <div class="bar-change up">+5.5%</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-header"><span class="bar-name">红爵</span><span class="bar-value">13.2%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:40%"></div></div>
+              <div class="bar-change up">+6.8%</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-header"><span class="bar-name">superX</span><span class="bar-value">8.0%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:24%"></div></div>
+              <div class="bar-change up">+9.9%</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-header"><span class="bar-name">勇闯天涯系列</span><span class="bar-value">4.0%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:12%"></div></div>
+              <div class="bar-change up">+9.8%</div>
+            </div>
+          </div>
+          <div class="org-switch">
+            <div class="org-switch-item active" data-org="dept">事业部</div>
+            <div class="org-switch-item" data-org="center">营销中心</div>
+          </div>
+          <div class="data-table">
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>品种排名</th><th>当期</th><th>同期</th><th>同比增减</th><th>同比增幅</th><th>增量贡献</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="rank-badge top3">1</span>喜力</td><td>285.6</td><td>256.3</td><td class="text-up">+29.3</td><td class="text-up">+11.4%</td><td><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">2</span>老雪</td><td>198.5</td><td>178.2</td><td class="text-up">+20.3</td><td class="text-up">+11.4%</td><td><div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">3</span>雪花纯生</td><td>156.3</td><td>148.2</td><td class="text-up">+8.1</td><td class="text-up">+5.5%</td><td><div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge normal">4</span>红爵</td><td>112.8</td><td>105.6</td><td class="text-up">+7.2</td><td class="text-up">+6.8%</td><td><div class="progress-bar"><div class="progress-fill" style="width:35%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge normal">5</span>superX</td><td>68.5</td><td>62.3</td><td class="text-up">+6.2</td><td class="text-up">+9.9%</td><td><div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge normal">6</span>勇闯天涯系列</td><td>34.6</td><td>31.5</td><td class="text-up">+3.1</td><td class="text-up">+9.8%</td><td><div class="progress-bar"><div class="progress-fill" style="width:15%"></div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="sub-content" data-sub-content="heineken">
+          <div class="summary-card">
+            <div class="card-title">喜力销量表现</div>
+            <div class="summary-metrics">
+              <div class="summary-metric">
+                <div class="metric-label">全国（KL）</div>
+                <div class="metric-value">285.6</div>
+              </div>
+              <div class="summary-metric">
+                <div class="metric-label">同比增减</div>
+                <div class="metric-value">+29.3</div>
+                <div class="metric-change up">+11.4%</div>
+              </div>
+            </div>
+          </div>
+          <div class="org-switch">
+            <div class="org-switch-item active" data-org="dept">事业部</div>
+            <div class="org-switch-item" data-org="center">营销中心</div>
+          </div>
+          <div class="data-table">
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>组织排名</th><th>当期</th><th>同期</th><th>同比增减</th><th>同比增幅</th><th>增量贡献</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="rank-badge top3">1</span>华东事业部</td><td>85.2</td><td>75.3</td><td class="text-up">+9.9</td><td class="text-up">+13.1%</td><td><div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">2</span>华南事业部</td><td>72.5</td><td>65.8</td><td class="text-up">+6.7</td><td class="text-up">+10.2%</td><td><div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">3</span>华北事业部</td><td>58.6</td><td>52.3</td><td class="text-up">+6.3</td><td class="text-up">+12.0%</td><td><div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-hint">
+          <div class="hint-text">上滑查看【老雪生意表现】</div>
+          <div class="hint-page">1 / 7</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 其他品种 Tab ========== -->
+    <div class="tab-content" id="tab-other">
+      <div class="banner">
+        <div class="banner-top">
+          <div class="banner-title" id="other-banner-title">全国其他品种生意表现</div>
+          <div class="banner-nav-btn" onclick="openNavMenu('other')">
+            <span>导航</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+        <div class="banner-bottom">
+          <div class="banner-time">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="other-time">2026年6月</span>
+          </div>
+          <div class="banner-filter-btn" id="other-filter-btn" onclick="openFilter('other')">
+            <span>品种筛选</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="sub-nav" id="other-sub-nav">
+        <div class="sub-nav-item active" data-sub="overview">其他品种生意表现</div>
+        <div class="sub-nav-item" data-sub="suer">苏尔生意表现</div>
+        <div class="sub-nav-item" data-sub="heishi">黑狮生意表现</div>
+        <div class="sub-nav-item" data-sub="hongjueqingka">红爵轻卡生意表现</div>
+        <div class="sub-nav-item" data-sub="maersilv">马尔斯绿生意表现</div>
+        <div class="sub-nav-item" data-sub="xuehualianpu">雪花脸谱生意表现</div>
+        <div class="sub-nav-item" data-sub="qingshihuang">秦始皇生意表现</div>
+      </div>
+      <div class="content-area" id="other-content">
+        <div class="sub-content active" data-sub-content="overview">
+          <div class="bar-chart">
+            <div class="card-title">其他品种销量占比</div>
+            <div class="bar-item">
+              <div class="bar-header"><span class="bar-name">苏尔</span><span class="bar-value">22.7%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
+              <div class="bar-change up">+28.9%</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-header"><span class="bar-name">黑狮</span><span class="bar-value">20.5%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:90%"></div></div>
+              <div class="bar-change up">+25.9%</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-header"><span class="bar-name">红爵轻卡</span><span class="bar-value">18.0%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:79%"></div></div>
+              <div class="bar-change up">+24.2%</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-header"><span class="bar-name">马尔斯绿</span><span class="bar-value">14.7%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:65%"></div></div>
+              <div class="bar-change up">+20.9%</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-header"><span class="bar-name">雪花脸谱</span><span class="bar-value">12.1%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:53%"></div></div>
+              <div class="bar-change up">+18.8%</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-header"><span class="bar-name">秦始皇</span><span class="bar-value">12.1%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:53%"></div></div>
+              <div class="bar-change up">+18.8%</div>
+            </div>
+          </div>
+          <div class="org-switch">
+            <div class="org-switch-item active" data-org="dept">事业部</div>
+            <div class="org-switch-item" data-org="center">营销中心</div>
+          </div>
+          <div class="data-table">
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>品种排名</th><th>当期</th><th>同期</th><th>同比增减</th><th>同比增幅</th><th>增量贡献</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="rank-badge top3">1</span>苏尔</td><td>28.5</td><td>22.1</td><td class="text-up">+6.4</td><td class="text-up">+28.9%</td><td><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">2</span>黑狮</td><td>25.8</td><td>20.5</td><td class="text-up">+5.3</td><td class="text-up">+25.9%</td><td><div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge top3">3</span>红爵轻卡</td><td>22.6</td><td>18.2</td><td class="text-up">+4.4</td><td class="text-up">+24.2%</td><td><div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge normal">4</span>马尔斯绿</td><td>18.5</td><td>15.3</td><td class="text-up">+3.2</td><td class="text-up">+20.9%</td><td><div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge normal">5</span>雪花脸谱</td><td>15.2</td><td>12.8</td><td class="text-up">+2.4</td><td class="text-up">+18.8%</td><td><div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div></td></tr>
+                  <tr><td><span class="rank-badge normal">6</span>秦始皇</td><td>15.2</td><td>12.8</td><td class="text-up">+2.4</td><td class="text-up">+18.8%</td><td><div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-hint">
+          <div class="hint-text">上滑查看【苏尔生意表现】</div>
+          <div class="hint-page">1 / 7</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 弹窗：筛选 ========== -->
+    <div class="modal-overlay" id="filter-modal" onclick="closeFilter()"></div>
+    <div class="modal-drawer" id="filter-drawer">
+      <div class="modal-title" id="filter-title">档次筛选</div>
+      <div class="modal-options" id="filter-options"></div>
+      <div class="modal-actions">
+        <div class="modal-btn cancel" onclick="closeFilter()">取消</div>
+        <div class="modal-btn confirm" onclick="confirmFilter()">确认</div>
+      </div>
+    </div>
+
+    <!-- ========== 弹窗：导航菜单 ========== -->
+    <div class="nav-menu-overlay" id="nav-menu-overlay" onclick="closeNavMenu()"></div>
+    <div class="nav-menu" id="nav-menu">
+      <div class="nav-menu-header">
+        <div class="nav-menu-title">导航菜单</div>
+      </div>
+      <div class="nav-menu-list" id="nav-menu-list"></div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script>
+    // ========== 状态管理 ==========
+    let currentTab = 'grade';
+    let currentSub = { grade: 'overview', brand: 'overview', main: 'overview', other: 'overview' };
+    let currentOrg = 'dept';
+    let filterType = '';
+    let selectedFilter = '';
+
+    // ========== Tab 切换 ==========
+    document.querySelectorAll('.page-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        const tabName = this.dataset.tab;
+        if (tabName === currentTab) return;
+        document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById('tab-' + tabName).classList.add('active');
+        currentTab = tabName;
+        showToast('已切换到：' + this.querySelector('span').textContent);
+      });
+    });
+
+    // ========== 子维度切换 ==========
+    document.querySelectorAll('.sub-nav').forEach(nav => {
+      nav.addEventListener('click', function(e) {
+        const item = e.target.closest('.sub-nav-item');
+        if (!item) return;
+        const subName = item.dataset.sub;
+        const navParent = item.closest('.sub-nav');
+        navParent.querySelectorAll('.sub-nav-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        currentSub[currentTab] = subName;
+        // 切换对应内容
+        const contentArea = navParent.nextElementSibling;
+        if (contentArea) {
+          contentArea.querySelectorAll('.sub-content').forEach(c => c.classList.remove('active'));
+          const target = contentArea.querySelector('[data-sub-content="' + subName + '"]');
+          if (target) target.classList.add('active');
+        }
+        showToast('已切换到：' + item.textContent);
+      });
+    });
+
+    // ========== 组织切换 ==========
+    document.querySelectorAll('.org-switch').forEach(sw => {
+      sw.addEventListener('click', function(e) {
+        const item = e.target.closest('.org-switch-item');
+        if (!item) return;
+        this.querySelectorAll('.org-switch-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        currentOrg = item.dataset.org;
+        showToast('已切换到：' + item.textContent);
+      });
+    });
+
+    // ========== 筛选弹窗 ==========
+    const filterData = {
+      grade: { title: '档次筛选', options: ['全部档次', '普高及以上', '次高', '中档', '大主流'] },
+      main: { title: '品种筛选', options: ['全部品种', '喜力', '纯生', 'superX', '老雪', '红爵', '勇闯系列'] },
+      other: { title: '品种筛选', options: ['全部品种', '苏尔', '黑狮', '红爵轻卡', '马尔斯绿', '雪花脸谱', '秦始皇'] }
+    };
+
+    function openFilter(type) {
+      filterType = type;
+      const data = filterData[type];
+      document.getElementById('filter-title').textContent = data.title;
+      const optionsHtml = data.options.map((opt, idx) => `
+        <div class="modal-option ${idx === 0 ? 'selected' : ''}" onclick="selectFilter(this, '${opt}')">
+          <span>${opt}</span>
+          <span class="check">${idx === 0 ? '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#0073E5\" stroke-width=\"2\"><polyline points=\"20 6 9 17 4 12\"/></svg>' : ''}</span>
+        </div>
+      `).join('');
+      document.getElementById('filter-options').innerHTML = optionsHtml;
+      document.getElementById('filter-modal').classList.add('show');
+      document.getElementById('filter-drawer').classList.add('show');
+    }
+
+    function closeFilter() {
+      document.getElementById('filter-modal').classList.remove('show');
+      document.getElementById('filter-drawer').classList.remove('show');
+    }
+
+    function selectFilter(el, value) {
+      selectedFilter = value;
+      document.querySelectorAll('.modal-option').forEach(o => {
+        o.classList.remove('selected');
+        o.querySelector('.check').innerHTML = '';
+      });
+      el.classList.add('selected');
+      el.querySelector('.check').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#0073E5" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+    }
+
+    function confirmFilter() {
+      closeFilter();
+      showToast('已筛选：' + (selectedFilter || '全部'));
+    }
+
+    // ========== 导航菜单 ==========
+    const navMenuData = {
+      grade: ['分档次生意表现', '普高及以上生意表现', '次高生意表现', '中档生意表现', '大主流生意表现'],
+      brand: ['分品牌生意表现'],
+      main: ['分主力品种生意表现', '喜力生意表现', '纯生生意表现', 'superX生意表现', '老雪生意表现', '红爵生意表现', '勇闯系列生意表现'],
+      other: ['其他品种生意表现', '苏尔生意表现', '黑狮生意表现', '红爵轻卡生意表现', '马尔斯绿生意表现', '雪花脸谱生意表现', '秦始皇生意表现']
+    };
+
+    function openNavMenu(tab) {
+      const items = navMenuData[tab];
+      const listHtml = items.map((item, idx) => `
+        <div class="nav-menu-item ${idx === 0 ? 'active' : ''}" onclick="selectNavItem(this)">${item}</div>
+      `).join('');
+      document.getElementById('nav-menu-list').innerHTML = listHtml;
+      document.getElementById('nav-menu-overlay').classList.add('show');
+      document.getElementById('nav-menu').classList.add('show');
+    }
+
+    function closeNavMenu() {
+      document.getElementById('nav-menu-overlay').classList.remove('show');
+      document.getElementById('nav-menu').classList.remove('show');
+    }
+
+    function selectNavItem(el) {
+      document.querySelectorAll('.nav-menu-item').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+      closeNavMenu();
+      showToast('已导航到：' + el.textContent);
+    }
+
+    // ========== Toast ==========
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // ========== 初始化 ==========
+    document.addEventListener('DOMContentLoaded', function() {
+      showToast('销量快报加载完成');
+    });
+  </script>
+</body>
+</html>

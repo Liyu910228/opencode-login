@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>销量快报</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .header-menu {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* 维度标签 */
+        .dimension-tabs {
+            background: white;
+            display: flex;
+            border-bottom: 1px solid #e8e8e8;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .dimension-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .dimension-tab {
+            flex: 1;
+            min-width: 80px;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            position: relative;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dimension-tab.active {
+            color: #1e88e5;
+            font-weight: 600;
+        }
+
+        .dimension-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 20%;
+            right: 20%;
+            height: 3px;
+            background: #1e88e5;
+            border-radius: 2px;
+        }
+
+        /* Banner */
+        .banner {
+            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+            color: white;
+            padding: 20px 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+
+        .banner-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .banner-date {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .banner-nav {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* 时间切换 */
+        .time-tabs {
+            background: white;
+            display: flex;
+            padding: 12px 16px;
+            gap: 12px;
+        }
+
+        .time-tab {
+            flex: 1;
+            padding: 8px 12px;
+            text-align: center;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #666;
+            background: #f5f5f5;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .time-tab.active {
+            background: #1e88e5;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* 汇总卡片 */
+        .summary-card {
+            background: white;
+            margin: 12px 16px;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .summary-metrics {
+            display: flex;
+            gap: 24px;
+        }
+
+        .metric {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .metric-value.positive {
+            color: #1e88e5;
+        }
+
+        .metric-value.negative {
+            color: #f44336;
+        }
+
+        /* 组织切换 */
+        .org-tabs {
+            background: white;
+            display: flex;
+            padding: 0 16px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .org-tab {
+            flex: 1;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .org-tab.active {
+            color: #1e88e5;
+            font-weight: 600;
+        }
+
+        .org-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 30%;
+            right: 30%;
+            height: 3px;
+            background: #1e88e5;
+            border-radius: 2px;
+        }
+
+        /* 数据表格 */
+        .data-table {
+            background: white;
+            margin: 0 16px 16px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .table-header {
+            display: flex;
+            background: #fafafa;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table-header-cell {
+            font-size: 12px;
+            color: #999;
+            font-weight: 600;
+        }
+
+        .table-row {
+            display: flex;
+            padding: 14px 16px;
+            border-bottom: 1px solid #f5f5f5;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .table-row:active {
+            background: #f5f5f5;
+        }
+
+        .table-row.negative {
+            background: #fff5f5;
+        }
+
+        .table-cell {
+            font-size: 14px;
+        }
+
+        .cell-rank {
+            width: 40px;
+            text-align: center;
+        }
+
+        .rank-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .rank-num.top {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .rank-num.normal {
+            background: #f0f0f0;
+            color: #999;
+        }
+
+        .cell-org {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .org-name {
+            font-weight: 500;
+        }
+
+        .org-arrow {
+            color: #ccc;
+            font-size: 12px;
+        }
+
+        .cell-current {
+            width: 80px;
+            text-align: right;
+        }
+
+        .cell-period {
+            width: 80px;
+            text-align: right;
+        }
+
+        .cell-change {
+            width: 80px;
+            text-align: right;
+        }
+
+        .cell-growth {
+            width: 80px;
+            text-align: right;
+        }
+
+        .growth-positive {
+            color: #1e88e5;
+        }
+
+        .growth-negative {
+            color: #f44336;
+        }
+
+        /* 进度条 */
+        .progress-bar {
+            width: 60px;
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .progress-fill.positive {
+            background: #1e88e5;
+        }
+
+        .progress-fill.negative {
+            background: #f44336;
+        }
+
+        /* 底部引导 */
+        .bottom-hint {
+            text-align: center;
+            padding: 16px;
+            color: #999;
+            font-size: 13px;
+        }
+
+        /* 快捷按钮 */
+        .fab {
+            position: fixed;
+            right: 20px;
+            bottom: 80px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(30, 136, 229, 0.4);
+            cursor: pointer;
+            z-index: 99;
+            transition: transform 0.2s;
+        }
+
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        /* 下拉刷新指示器 */
+        .pull-refresh {
+            text-align: center;
+            padding: 12px;
+            color: #999;
+            font-size: 13px;
+            display: none;
+        }
+
+        .pull-refresh.visible {
+            display: block;
+        }
+
+        /* 响应式 */
+        @media (max-width: 375px) {
+            .banner-title {
+                font-size: 16px;
+            }
+            .summary-value {
+                font-size: 24px;
+            }
+            .table-cell {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-title">← 销量快报</div>
+        <div class="header-menu">⋮</div>
+    </header>
+
+    <!-- 维度标签 -->
+    <div class="dimension-tabs">
+        <div class="dimension-tab active" data-dimension="grade">分档次</div>
+        <div class="dimension-tab" data-dimension="brand">分品牌</div>
+        <div class="dimension-tab" data-dimension="product">重点产品</div>
+        <div class="dimension-tab" data-dimension="other">其他</div>
+    </div>
+
+    <!-- Banner -->
+    <div class="banner">
+        <div class="banner-title">全国普及及以上生意表现</div>
+        <div class="banner-date">2025年6月</div>
+        <div class="banner-nav">导航 ›</div>
+    </div>
+
+    <!-- 时间切换 -->
+    <div class="time-tabs">
+        <div class="time-tab active" data-time="day">当日</div>
+        <div class="time-tab" data-time="month">月累计</div>
+        <div class="time-tab" data-time="year">年累计</div>
+    </div>
+
+    <!-- 汇总卡片 -->
+    <div class="summary-card">
+        <div class="summary-label">普及及以上销量表现</div>
+        <div class="summary-value">1,663,393 KL</div>
+        <div class="summary-metrics">
+            <div class="metric">
+                <span class="metric-label">同比增减</span>
+                <span class="metric-value positive">+90,134</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">同比增幅</span>
+                <span class="metric-value positive">+5.7%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 组织切换 -->
+    <div class="org-tabs">
+        <div class="org-tab active" data-org="division">分事业部</div>
+        <div class="org-tab" data-org="center">分营销中心</div>
+    </div>
+
+    <!-- 下拉刷新 -->
+    <div class="pull-refresh" id="pullRefresh">
+        <span>↓ 下拉刷新</span>
+    </div>
+
+    <!-- 数据表格 -->
+    <div class="data-table">
+        <div class="table-header">
+            <div class="table-header-cell" style="width: 40px;">排名</div>
+            <div class="table-header-cell" style="flex: 1;">组织</div>
+            <div class="table-header-cell" style="width: 80px; text-align: right;">当期</div>
+            <div class="table-header-cell" style="width: 80px; text-align: right;">同期</div>
+            <div class="table-header-cell" style="width: 80px; text-align: right;">增减</div>
+            <div class="table-header-cell" style="width: 80px; text-align: right;">增幅</div>
+        </div>
+        <div id="tableBody">
+            <!-- 动态生成 -->
+        </div>
+    </div>
+
+    <!-- 底部引导 -->
+    <div class="bottom-hint">
+        ↑ 上滑查看【次高分组织销量表现】1/4
+    </div>
+
+    <!-- 快捷按钮 -->
+    <div class="fab" id="fabBtn">🏠</div>
+
+    <script>
+        // 模拟数据
+        const mockData = {
+            division: [
+                { rank: 1, name: '昆明事业部', current: 4950, period: 444, change: 4506, growth: 1014.9, contribution: 85.2 },
+                { rank: 2, name: '西安事业部', current: 2666, period: 83, change: 2583, growth: 3111.8, contribution: 48.8 },
+                { rank: 3, name: '成都事业部', current: 1823, period: 1567, change: 256, growth: 16.3, contribution: 4.8 },
+                { rank: 4, name: '重庆事业部', current: 1654, period: 1789, change: -135, growth: -7.5, contribution: -2.5 },
+                { rank: 5, name: '贵阳事业部', current: 1234, period: 1100, change: 134, growth: 12.2, contribution: 2.5 },
+            ],
+            center: [
+                { rank: 1, name: '昆明营销中心', current: 3200, period: 300, change: 2900, growth: 966.7, contribution: 54.7 },
+                { rank: 2, name: '西安营销中心', current: 1800, period: 50, change: 1750, growth: 3500.0, contribution: 33.0 },
+                { rank: 3, name: '成都营销中心', current: 1200, period: 1100, change: 100, growth: 9.1, contribution: 1.9 },
+                { rank: 4, name: '重庆营销中心', current: 980, period: 1050, change: -70, growth: -6.7, contribution: -1.3 },
+                { rank: 5, name: '贵阳营销中心', current: 850, period: 800, change: 50, growth: 6.3, contribution: 0.9 },
+            ]
+        };
+
+        let currentOrg = 'division';
+        let currentDimension = 'grade';
+        let currentTime = 'day';
+
+        // 渲染表格
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = data.map(row => {
+                const isNegative = row.growth < 0;
+                return `
+                    <div class="table-row ${isNegative ? 'negative' : ''}" data-org="${row.name}">
+                        <div class="table-cell cell-rank">
+                            <div class="rank-num ${row.rank <= 3 ? 'top' : 'normal'}">${row.rank}</div>
+                        </div>
+                        <div class="table-cell cell-org">
+                            <span class="org-name">${row.name}</span>
+                            <span class="org-arrow">›</span>
+                        </div>
+                        <div class="table-cell cell-current">${row.current.toLocaleString()}</div>
+                        <div class="table-cell cell-period">${row.period.toLocaleString()}</div>
+                        <div class="table-cell cell-change">${row.change > 0 ? '+' : ''}${row.change.toLocaleString()}</div>
+                        <div class="table-cell cell-growth ${isNegative ? 'growth-negative' : 'growth-positive'}">
+                            ${row.growth > 0 ? '+' : ''}${row.growth.toFixed(1)}%
+                            <div class="progress-bar">
+                                <div class="progress-fill ${isNegative ? 'negative' : 'positive'}" style="width: ${Math.min(Math.abs(row.contribution), 100)}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 维度切换
+        document.querySelectorAll('.dimension-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.dimension-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentDimension = this.dataset.dimension;
+                updateBannerTitle();
+            });
+        });
+
+        // 时间切换
+        document.querySelectorAll('.time-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentTime = this.dataset.time;
+            });
+        });
+
+        // 组织切换
+        document.querySelectorAll('.org-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.org-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentOrg = this.dataset.org;
+                renderTable(mockData[currentOrg]);
+            });
+        });
+
+        // 更新Banner标题
+        function updateBannerTitle() {
+            const titles = {
+                grade: '全国普及及以上生意表现',
+                brand: '全国分品牌生意表现',
+                product: '全国重点产品生意表现',
+                other: '全国其他品种生意表现'
+            };
+            document.querySelector('.banner-title').textContent = titles[currentDimension] || titles.grade;
+        }
+
+        // 行点击事件
+        document.addEventListener('click', function(e) {
+            const row = e.target.closest('.table-row');
+            if (row) {
+                const orgName = row.querySelector('.org-name').textContent;
+                alert(`点击了: ${orgName}\n这里可以展开下级组织或进入详情页`);
+            }
+        });
+
+        // 快捷按钮
+        document.getElementById('fabBtn').addEventListener('click', function() {
+            alert('🏠 快捷菜单:\n• 数据说明\n• 意见反馈\n• 返回工作台');
+        });
+
+        // 下拉刷新（简单模拟）
+        let startY = 0;
+        let isPulling = false;
+
+        document.addEventListener('touchstart', function(e) {
+            if (window.scrollY === 0) {
+                startY = e.touches[0].clientY;
+                isPulling = true;
+            }
+        });
+
+        document.addEventListener('touchmove', function(e) {
+            if (!isPulling) return;
+            const currentY = e.touches[0].clientY;
+            const diff = currentY - startY;
+            if (diff > 60) {
+                document.getElementById('pullRefresh').classList.add('visible');
+            }
+        });
+
+        document.addEventListener('touchend', function() {
+            if (isPulling) {
+                isPulling = false;
+                setTimeout(() => {
+                    document.getElementById('pullRefresh').classList.remove('visible');
+                }, 1000);
+            }
+        });
+
+        // 初始化
+        renderTable(mockData.division);
+    </script>
+</body>
+</html>

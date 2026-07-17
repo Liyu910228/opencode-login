@@ -1,0 +1,2487 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "bailian/qwen3.7-plus",
+  "small_model": "bailian/qwen3-coder-flash",
+  "provider": {
+    "bailian": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Alibaba Bailian",
+      "options": {
+        "baseURL": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "apiKey": "{env:BAILIAN_API_KEY}"
+      },
+      "models": {
+        "MiniMax-M2.1": {
+          "name": "MiniMax-M2.1",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 131072
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "release_date": "2025-12-19"
+        },
+        "MiniMax-M2.5": {
+          "name": "MiniMax-M2.5",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 131072
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "minimax-m2.5",
+          "release_date": "2026-02-12"
+        },
+        "MiniMax/MiniMax-M2.1": {
+          "name": "MiniMax/MiniMax-M2.1",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 131072
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "release_date": "2025-12-19"
+        },
+        "MiniMax/MiniMax-M2.5": {
+          "name": "MiniMax/MiniMax-M2.5",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 131072
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "minimax-m2.5",
+          "release_date": "2026-02-12"
+        },
+        "MiniMax/MiniMax-M2.7": {
+          "name": "MiniMax/MiniMax-M2.7",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 204800,
+            "output": 131000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "minimax",
+          "release_date": "2026-03-18"
+        },
+        "MiniMax/speech-02-hd": {
+          "name": "MiniMax/speech-02-hd"
+        },
+        "MiniMax/speech-02-turbo": {
+          "name": "MiniMax/speech-02-turbo"
+        },
+        "MiniMax/speech-2.8-hd": {
+          "name": "MiniMax/speech-2.8-hd"
+        },
+        "MiniMax/speech-2.8-turbo": {
+          "name": "MiniMax/speech-2.8-turbo"
+        },
+        "ZHIPU/GLM-5": {
+          "name": "ZHIPU/GLM-5",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 205000,
+            "output": 131072
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "release_date": "2026-02-15"
+        },
+        "ZHIPU/GLM-5.1": {
+          "name": "ZHIPU/GLM-5.1",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 205000,
+            "output": 205000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "glm",
+          "release_date": "2026-04-08"
+        },
+        "codeqwen1.5-7b-chat": {
+          "name": "codeqwen1.5-7b-chat"
+        },
+        "deepseek-r1": {
+          "name": "deepseek-r1",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 384000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek-thinking",
+          "release_date": "2025-12-01"
+        },
+        "deepseek-r1-distill-llama-70b": {
+          "name": "deepseek-r1-distill-llama-70b",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 131072,
+            "output": 32768
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek-thinking",
+          "release_date": "2025-01-30"
+        },
+        "deepseek-r1-distill-llama-8b": {
+          "name": "deepseek-r1-distill-llama-8b",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 32768,
+            "output": 16384
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek-thinking",
+          "release_date": "2025-01-01"
+        },
+        "deepseek-r1-distill-qwen-1.5b": {
+          "name": "deepseek-r1-distill-qwen-1.5b"
+        },
+        "deepseek-r1-distill-qwen-14b": {
+          "name": "deepseek-r1-distill-qwen-14b",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 32768,
+            "output": 16384
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-01-01"
+        },
+        "deepseek-r1-distill-qwen-32b": {
+          "name": "deepseek-r1-distill-qwen-32b",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 128000,
+            "output": 16384
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": false,
+          "family": "deepseek-thinking",
+          "release_date": "2025-04-03"
+        },
+        "deepseek-r1-distill-qwen-7b": {
+          "name": "deepseek-r1-distill-qwen-7b",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 32768,
+            "output": 16384
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-01-01"
+        },
+        "deepseek-v3": {
+          "name": "deepseek-v3",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 164000,
+            "output": 164000
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek",
+          "release_date": "2024-12-26"
+        },
+        "deepseek-v3.1": {
+          "name": "deepseek-v3.1",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 128000,
+            "output": 32768
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek",
+          "release_date": "2025-08-21"
+        },
+        "deepseek-v3.2": {
+          "name": "deepseek-v3.2",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 163840,
+            "output": 163840
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek",
+          "release_date": "2025-12-01"
+        },
+        "deepseek-v4-flash": {
+          "name": "deepseek-v4-flash",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1050000,
+            "output": 384000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek-flash",
+          "release_date": "2026-04-24"
+        },
+        "deepseek-v4-pro": {
+          "name": "deepseek-v4-pro",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1050000,
+            "output": 384000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek-thinking",
+          "release_date": "2026-04-24"
+        },
+        "glm-4.7": {
+          "name": "glm-4.7",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 200000,
+            "output": 128000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "glm",
+          "release_date": "2026-01-06"
+        },
+        "glm-5": {
+          "name": "glm-5",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 205000,
+            "output": 131072
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "release_date": "2026-02-15"
+        },
+        "glm-5.1": {
+          "name": "glm-5.1",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 205000,
+            "output": 205000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "glm",
+          "release_date": "2026-04-08"
+        },
+        "glm-5.2": {
+          "name": "glm-5.2",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1049000,
+            "output": 262000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "glm",
+          "release_date": "2026-06-13"
+        },
+        "gui-plus": {
+          "name": "gui-plus"
+        },
+        "kimi-k2-thinking": {
+          "name": "kimi-k2-thinking",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 16384
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "kimi-thinking",
+          "release_date": "2025-11-06"
+        },
+        "kimi-k2.5": {
+          "name": "kimi-k2.5",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 262144
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "kimi-k2",
+          "release_date": "2026-01-01"
+        },
+        "kimi-k2.6": {
+          "name": "kimi-k2.6",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 16384
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "kimi-k2",
+          "release_date": "2026-04-21"
+        },
+        "kimi-k2.7-code": {
+          "name": "kimi-k2.7-code",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 262144
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "kimi-k2",
+          "release_date": "2026-06-12"
+        },
+        "kimi/kimi-k2.5": {
+          "name": "kimi/kimi-k2.5",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 262144
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "kimi-k2",
+          "release_date": "2026-01-01"
+        },
+        "kimi/kimi-k2.6": {
+          "name": "kimi/kimi-k2.6",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 262144
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "kimi-k2",
+          "release_date": "2026-04-21"
+        },
+        "kimi/kimi-k2.7-code": {
+          "name": "kimi/kimi-k2.7-code",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 262144
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "kimi-k2",
+          "release_date": "2026-06-12"
+        },
+        "qvq-max": {
+          "name": "qvq-max",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 131072,
+            "output": 8192
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qvq",
+          "release_date": "2025-03-25"
+        },
+        "qvq-plus": {
+          "name": "qvq-plus"
+        },
+        "qwen-1.8b-chat": {
+          "name": "qwen-1.8b-chat"
+        },
+        "qwen-1.8b-longcontext-chat": {
+          "name": "qwen-1.8b-longcontext-chat"
+        },
+        "qwen-14b-chat": {
+          "name": "qwen-14b-chat"
+        },
+        "qwen-72b-chat": {
+          "name": "qwen-72b-chat"
+        },
+        "qwen-7b-chat": {
+          "name": "qwen-7b-chat"
+        },
+        "qwen-coder-plus": {
+          "name": "qwen-coder-plus",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 131072,
+            "output": 8192
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2024-09-18"
+        },
+        "qwen-coder-plus-1106": {
+          "name": "qwen-coder-plus-1106"
+        },
+        "qwen-coder-turbo": {
+          "name": "qwen-coder-turbo"
+        },
+        "qwen-deep-research-2025-12-15": {
+          "name": "qwen-deep-research-2025-12-15"
+        },
+        "qwen-deep-search-planning": {
+          "name": "qwen-deep-search-planning"
+        },
+        "qwen-flash": {
+          "name": "qwen-flash",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 32768
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-07-28"
+        },
+        "qwen-flash-character": {
+          "name": "qwen-flash-character"
+        },
+        "qwen-flash-character-2026-02-26": {
+          "name": "qwen-flash-character-2026-02-26"
+        },
+        "qwen-image-2.0": {
+          "name": "qwen-image-2.0",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "image"
+            ]
+          },
+          "limit": {
+            "context": 8192,
+            "output": 0
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": false,
+          "family": "qwen",
+          "release_date": "2026-03-03"
+        },
+        "qwen-image-2.0-2026-03-03": {
+          "name": "qwen-image-2.0-2026-03-03"
+        },
+        "qwen-image-2.0-pro": {
+          "name": "qwen-image-2.0-pro",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "image"
+            ]
+          },
+          "limit": {
+            "context": 8192,
+            "output": 0
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": false,
+          "family": "qwen",
+          "release_date": "2026-03-03"
+        },
+        "qwen-image-2.0-pro-2026-03-03": {
+          "name": "qwen-image-2.0-pro-2026-03-03"
+        },
+        "qwen-image-2.0-pro-2026-04-22": {
+          "name": "qwen-image-2.0-pro-2026-04-22"
+        },
+        "qwen-image-edit-max": {
+          "name": "qwen-image-edit-max"
+        },
+        "qwen-image-edit-max-2026-01-16": {
+          "name": "qwen-image-edit-max-2026-01-16"
+        },
+        "qwen-image-edit-plus": {
+          "name": "qwen-image-edit-plus"
+        },
+        "qwen-image-edit-plus-2025-10-30": {
+          "name": "qwen-image-edit-plus-2025-10-30"
+        },
+        "qwen-image-edit-plus-2025-12-15": {
+          "name": "qwen-image-edit-plus-2025-12-15"
+        },
+        "qwen-image-max": {
+          "name": "qwen-image-max"
+        },
+        "qwen-image-max-2025-12-30": {
+          "name": "qwen-image-max-2025-12-30"
+        },
+        "qwen-image-plus-2026-01-09": {
+          "name": "qwen-image-plus-2026-01-09"
+        },
+        "qwen-long": {
+          "name": "qwen-long",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 10000000,
+            "input": 10000000,
+            "output": 8192
+          },
+          "reasoning": false,
+          "tool_call": false,
+          "release_date": "2025-01-25"
+        },
+        "qwen-math-plus": {
+          "name": "qwen-math-plus",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 4096,
+            "output": 3072
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2024-08-16"
+        },
+        "qwen-math-plus-0919": {
+          "name": "qwen-math-plus-0919"
+        },
+        "qwen-math-plus-latest": {
+          "name": "qwen-math-plus-latest"
+        },
+        "qwen-math-turbo": {
+          "name": "qwen-math-turbo",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 4096,
+            "output": 3072
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2024-09-19"
+        },
+        "qwen-max": {
+          "name": "qwen-max",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 131072,
+            "output": 8192
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2024-04-03"
+        },
+        "qwen-max-0107": {
+          "name": "qwen-max-0107"
+        },
+        "qwen-max-1201": {
+          "name": "qwen-max-1201"
+        },
+        "qwen-max-longcontext": {
+          "name": "qwen-max-longcontext"
+        },
+        "qwen-mt-flash": {
+          "name": "qwen-mt-flash"
+        },
+        "qwen-mt-lite": {
+          "name": "qwen-mt-lite"
+        },
+        "qwen-mt-plus": {
+          "name": "qwen-mt-plus",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 16384,
+            "output": 8192
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": false,
+          "family": "qwen",
+          "release_date": "2025-01"
+        },
+        "qwen-mt-turbo": {
+          "name": "qwen-mt-turbo",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 16384,
+            "output": 8192
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": false,
+          "family": "qwen",
+          "release_date": "2025-01"
+        },
+        "qwen-omni-turbo": {
+          "name": "qwen-omni-turbo",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "audio",
+              "video"
+            ],
+            "output": [
+              "text",
+              "audio"
+            ]
+          },
+          "limit": {
+            "context": 32768,
+            "output": 2048
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-01-19"
+        },
+        "qwen-plus": {
+          "name": "qwen-plus",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 32768
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2024-01-25"
+        },
+        "qwen-plus-2025-01-25": {
+          "name": "qwen-plus-2025-01-25"
+        },
+        "qwen-plus-2025-04-28": {
+          "name": "qwen-plus-2025-04-28"
+        },
+        "qwen-plus-2025-07-14": {
+          "name": "qwen-plus-2025-07-14"
+        },
+        "qwen-plus-2025-09-11": {
+          "name": "qwen-plus-2025-09-11"
+        },
+        "qwen-plus-2025-11-05": {
+          "name": "qwen-plus-2025-11-05"
+        },
+        "qwen-plus-2025-12-01": {
+          "name": "qwen-plus-2025-12-01"
+        },
+        "qwen-plus-latest": {
+          "name": "qwen-plus-latest",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 8192
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-01-25"
+        },
+        "qwen-tts-2025-05-22": {
+          "name": "qwen-tts-2025-05-22"
+        },
+        "qwen-turbo": {
+          "name": "qwen-turbo",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 4096
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "release_date": "2025-08-05"
+        },
+        "qwen-turbo-0919": {
+          "name": "qwen-turbo-0919"
+        },
+        "qwen-turbo-2024-11-01": {
+          "name": "qwen-turbo-2024-11-01"
+        },
+        "qwen-vl-max": {
+          "name": "qwen-vl-max",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 131072,
+            "output": 8192
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2024-04-08"
+        },
+        "qwen-vl-ocr": {
+          "name": "qwen-vl-ocr",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 34096,
+            "output": 4096
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": false,
+          "family": "qwen",
+          "release_date": "2024-10-28"
+        },
+        "qwen-vl-ocr-2025-11-20": {
+          "name": "qwen-vl-ocr-2025-11-20"
+        },
+        "qwen-vl-ocr-latest": {
+          "name": "qwen-vl-ocr-latest"
+        },
+        "qwen-vl-plus": {
+          "name": "qwen-vl-plus",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 131072,
+            "output": 8192
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2024-01-25"
+        },
+        "qwen1.5-0.5b-chat": {
+          "name": "qwen1.5-0.5b-chat"
+        },
+        "qwen1.5-1.8b-chat": {
+          "name": "qwen1.5-1.8b-chat"
+        },
+        "qwen1.5-110b-chat": {
+          "name": "qwen1.5-110b-chat"
+        },
+        "qwen1.5-14b-chat": {
+          "name": "qwen1.5-14b-chat"
+        },
+        "qwen1.5-32b-chat": {
+          "name": "qwen1.5-32b-chat"
+        },
+        "qwen1.5-72b-chat": {
+          "name": "qwen1.5-72b-chat"
+        },
+        "qwen1.5-7b-chat": {
+          "name": "qwen1.5-7b-chat"
+        },
+        "qwen2-0.5b-instruct": {
+          "name": "qwen2-0.5b-instruct"
+        },
+        "qwen2-1.5b-instruct": {
+          "name": "qwen2-1.5b-instruct"
+        },
+        "qwen2-57b-a14b-instruct": {
+          "name": "qwen2-57b-a14b-instruct"
+        },
+        "qwen2-7b-instruct": {
+          "name": "qwen2-7b-instruct"
+        },
+        "qwen2.5-0.5b-instruct": {
+          "name": "qwen2.5-0.5b-instruct"
+        },
+        "qwen2.5-1.5b-instruct": {
+          "name": "qwen2.5-1.5b-instruct"
+        },
+        "qwen2.5-math-1.5b-instruct": {
+          "name": "qwen2.5-math-1.5b-instruct"
+        },
+        "qwen3-14b": {
+          "name": "qwen3-14b",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 131072,
+            "output": 8192
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-04"
+        },
+        "qwen3-235b-a22b": {
+          "name": "qwen3-235b-a22b",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 41000,
+            "input": 41000,
+            "output": 32768
+          },
+          "reasoning": false,
+          "tool_call": true,
+          "release_date": "2025-04-29"
+        },
+        "qwen3-235b-a22b-instruct-2507": {
+          "name": "qwen3-235b-a22b-instruct-2507",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 8192
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-07-01"
+        },
+        "qwen3-235b-a22b-thinking-2507": {
+          "name": "qwen3-235b-a22b-thinking-2507",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 4096
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "release_date": "2025-08-12"
+        },
+        "qwen3-30b-a3b": {
+          "name": "qwen3-30b-a3b",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 41000,
+            "output": 41000
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-06-01"
+        },
+        "qwen3-30b-a3b-instruct-2507": {
+          "name": "qwen3-30b-a3b-instruct-2507",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 16384
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-07-30"
+        },
+        "qwen3-30b-a3b-thinking-2507": {
+          "name": "qwen3-30b-a3b-thinking-2507",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 32768
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-07-30"
+        },
+        "qwen3-32b": {
+          "name": "qwen3-32b",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 41000,
+            "input": 41000,
+            "output": 32768
+          },
+          "reasoning": false,
+          "tool_call": false,
+          "release_date": "2024-01-01"
+        },
+        "qwen3-8b": {
+          "name": "qwen3-8b",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 131072,
+            "output": 8192
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-04"
+        },
+        "qwen3-asr-flash-2026-02-10": {
+          "name": "qwen3-asr-flash-2026-02-10"
+        },
+        "qwen3-asr-flash-realtime": {
+          "name": "qwen3-asr-flash-realtime"
+        },
+        "qwen3-asr-flash-realtime-2025-10-27": {
+          "name": "qwen3-asr-flash-realtime-2025-10-27"
+        },
+        "qwen3-asr-flash-realtime-2026-02-10": {
+          "name": "qwen3-asr-flash-realtime-2026-02-10"
+        },
+        "qwen3-coder-480b-a35b-instruct": {
+          "name": "qwen3-coder-480b-a35b-instruct",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 65536
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-07-22"
+        },
+        "qwen3-coder-flash": {
+          "name": "qwen3-coder-flash",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 65536
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-07-28"
+        },
+        "qwen3-coder-next": {
+          "name": "qwen3-coder-next",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 16384
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2026-03-01"
+        },
+        "qwen3-coder-plus": {
+          "name": "qwen3-coder-plus",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1048576,
+            "output": 65536
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-07-23"
+        },
+        "qwen3-coder-plus-2025-07-22": {
+          "name": "qwen3-coder-plus-2025-07-22"
+        },
+        "qwen3-coder-plus-2025-09-23": {
+          "name": "qwen3-coder-plus-2025-09-23"
+        },
+        "qwen3-livetranslate-flash": {
+          "name": "qwen3-livetranslate-flash"
+        },
+        "qwen3-livetranslate-flash-2025-12-01": {
+          "name": "qwen3-livetranslate-flash-2025-12-01"
+        },
+        "qwen3-livetranslate-flash-realtime": {
+          "name": "qwen3-livetranslate-flash-realtime",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "audio",
+              "video"
+            ],
+            "output": [
+              "text",
+              "audio"
+            ]
+          },
+          "limit": {
+            "context": 53248,
+            "output": 4096
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": false,
+          "family": "qwen",
+          "release_date": "2025-09-22"
+        },
+        "qwen3-livetranslate-flash-realtime-2025-09-22": {
+          "name": "qwen3-livetranslate-flash-realtime-2025-09-22"
+        },
+        "qwen3-max": {
+          "name": "qwen3-max",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 65536
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "release_date": "2025-09-24"
+        },
+        "qwen3-max-2025-09-23": {
+          "name": "qwen3-max-2025-09-23",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 258048,
+            "output": 65536
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "release_date": "2025-09-24"
+        },
+        "qwen3-max-2026-01-23": {
+          "name": "qwen3-max-2026-01-23",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 32800
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2026-01-23"
+        },
+        "qwen3-max-preview": {
+          "name": "qwen3-max-preview",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 32768
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-09-05"
+        },
+        "qwen3-next-80b-a3b-instruct": {
+          "name": "qwen3-next-80b-a3b-instruct",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262000,
+            "output": 16384
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-01-01"
+        },
+        "qwen3-next-80b-a3b-thinking": {
+          "name": "qwen3-next-80b-a3b-thinking",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 131072
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-09-11"
+        },
+        "qwen3-omni-flash": {
+          "name": "qwen3-omni-flash",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "audio",
+              "video"
+            ],
+            "output": [
+              "text",
+              "audio"
+            ]
+          },
+          "limit": {
+            "context": 65536,
+            "output": 16384
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-09-15"
+        },
+        "qwen3-omni-flash-2025-09-15": {
+          "name": "qwen3-omni-flash-2025-09-15"
+        },
+        "qwen3-omni-flash-2025-12-01": {
+          "name": "qwen3-omni-flash-2025-12-01"
+        },
+        "qwen3-omni-flash-realtime": {
+          "name": "qwen3-omni-flash-realtime",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "audio",
+              "video"
+            ],
+            "output": [
+              "text",
+              "audio"
+            ]
+          },
+          "limit": {
+            "context": 65536,
+            "output": 16384
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-09-15"
+        },
+        "qwen3-omni-flash-realtime-2025-09-15": {
+          "name": "qwen3-omni-flash-realtime-2025-09-15"
+        },
+        "qwen3-omni-flash-realtime-2025-12-01": {
+          "name": "qwen3-omni-flash-realtime-2025-12-01"
+        },
+        "qwen3-s2s-flash-realtime-2025-09-22": {
+          "name": "qwen3-s2s-flash-realtime-2025-09-22"
+        },
+        "qwen3-tts-flash": {
+          "name": "qwen3-tts-flash"
+        },
+        "qwen3-tts-flash-2025-09-18": {
+          "name": "qwen3-tts-flash-2025-09-18"
+        },
+        "qwen3-tts-flash-2025-11-27": {
+          "name": "qwen3-tts-flash-2025-11-27"
+        },
+        "qwen3-tts-flash-realtime": {
+          "name": "qwen3-tts-flash-realtime"
+        },
+        "qwen3-tts-flash-realtime-2025-09-18": {
+          "name": "qwen3-tts-flash-realtime-2025-09-18"
+        },
+        "qwen3-tts-flash-realtime-2025-11-27": {
+          "name": "qwen3-tts-flash-realtime-2025-11-27"
+        },
+        "qwen3-tts-instruct-flash": {
+          "name": "qwen3-tts-instruct-flash"
+        },
+        "qwen3-tts-instruct-flash-2026-01-26": {
+          "name": "qwen3-tts-instruct-flash-2026-01-26"
+        },
+        "qwen3-tts-instruct-flash-realtime": {
+          "name": "qwen3-tts-instruct-flash-realtime"
+        },
+        "qwen3-tts-instruct-flash-realtime-2026-01-22": {
+          "name": "qwen3-tts-instruct-flash-realtime-2026-01-22"
+        },
+        "qwen3-tts-vc-2026-01-22": {
+          "name": "qwen3-tts-vc-2026-01-22"
+        },
+        "qwen3-tts-vc-realtime-2025-11-27": {
+          "name": "qwen3-tts-vc-realtime-2025-11-27"
+        },
+        "qwen3-tts-vc-realtime-2026-01-15": {
+          "name": "qwen3-tts-vc-realtime-2026-01-15"
+        },
+        "qwen3-tts-vd-2026-01-26": {
+          "name": "qwen3-tts-vd-2026-01-26"
+        },
+        "qwen3-tts-vd-realtime-2025-12-16": {
+          "name": "qwen3-tts-vd-realtime-2025-12-16"
+        },
+        "qwen3-tts-vd-realtime-2026-01-15": {
+          "name": "qwen3-tts-vd-realtime-2026-01-15"
+        },
+        "qwen3-vl-flash": {
+          "name": "qwen3-vl-flash",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 32000
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-10-09"
+        },
+        "qwen3-vl-flash-2025-10-15": {
+          "name": "qwen3-vl-flash-2025-10-15"
+        },
+        "qwen3-vl-flash-2026-01-22": {
+          "name": "qwen3-vl-flash-2026-01-22"
+        },
+        "qwen3-vl-plus": {
+          "name": "qwen3-vl-plus",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 32768
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-09-23"
+        },
+        "qwen3-vl-plus-2025-09-23": {
+          "name": "qwen3-vl-plus-2025-09-23"
+        },
+        "qwen3-vl-plus-2025-12-19": {
+          "name": "qwen3-vl-plus-2025-12-19"
+        },
+        "qwen3.5-122b-a10b": {
+          "name": "qwen3.5-122b-a10b",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video",
+              "audio"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 65536
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2026-02-23"
+        },
+        "qwen3.5-27b": {
+          "name": "qwen3.5-27b",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video",
+              "audio"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 65536
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2026-02-23"
+        },
+        "qwen3.5-35b-a3b": {
+          "name": "qwen3.5-35b-a3b",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video",
+              "audio"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 65536
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2026-02-23"
+        },
+        "qwen3.5-397b-a17b": {
+          "name": "qwen3.5-397b-a17b",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video",
+              "audio"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 65536
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2026-02-15"
+        },
+        "qwen3.5-flash": {
+          "name": "qwen3.5-flash",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 65536
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2026-02-23"
+        },
+        "qwen3.5-flash-2026-02-23": {
+          "name": "qwen3.5-flash-2026-02-23"
+        },
+        "qwen3.5-livetranslate-flash-realtime": {
+          "name": "qwen3.5-livetranslate-flash-realtime"
+        },
+        "qwen3.5-livetranslate-flash-realtime-2026-05-19": {
+          "name": "qwen3.5-livetranslate-flash-realtime-2026-05-19"
+        },
+        "qwen3.5-ocr": {
+          "name": "qwen3.5-ocr"
+        },
+        "qwen3.5-omni-flash": {
+          "name": "qwen3.5-omni-flash",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video",
+              "audio"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 49152,
+            "input": 49152,
+            "output": 16384
+          },
+          "reasoning": false,
+          "tool_call": false,
+          "release_date": "2026-03-30"
+        },
+        "qwen3.5-omni-flash-2026-03-15": {
+          "name": "qwen3.5-omni-flash-2026-03-15"
+        },
+        "qwen3.5-omni-flash-realtime": {
+          "name": "qwen3.5-omni-flash-realtime"
+        },
+        "qwen3.5-omni-flash-realtime-2026-03-15": {
+          "name": "qwen3.5-omni-flash-realtime-2026-03-15"
+        },
+        "qwen3.5-omni-plus": {
+          "name": "qwen3.5-omni-plus",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video",
+              "audio"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 983616,
+            "input": 983616,
+            "output": 65536
+          },
+          "reasoning": false,
+          "tool_call": false,
+          "release_date": "2026-03-30"
+        },
+        "qwen3.5-omni-plus-2026-03-15": {
+          "name": "qwen3.5-omni-plus-2026-03-15"
+        },
+        "qwen3.5-omni-plus-realtime": {
+          "name": "qwen3.5-omni-plus-realtime"
+        },
+        "qwen3.5-omni-plus-realtime-2026-03-15": {
+          "name": "qwen3.5-omni-plus-realtime-2026-03-15"
+        },
+        "qwen3.5-plus": {
+          "name": "qwen3.5-plus",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 64000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2026-02-16"
+        },
+        "qwen3.5-plus-2026-02-15": {
+          "name": "qwen3.5-plus-2026-02-15"
+        },
+        "qwen3.5-plus-2026-04-20": {
+          "name": "qwen3.5-plus-2026-04-20"
+        },
+        "qwen3.6-27b": {
+          "name": "qwen3.6-27b",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video",
+              "audio"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 65536
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2026-04-22"
+        },
+        "qwen3.6-35b-a3b": {
+          "name": "qwen3.6-35b-a3b",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video",
+              "audio"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 65536
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2026-04-17"
+        },
+        "qwen3.6-flash": {
+          "name": "qwen3.6-flash",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 65536
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen3.6",
+          "release_date": "2026-04-27"
+        },
+        "qwen3.6-flash-2026-04-16": {
+          "name": "qwen3.6-flash-2026-04-16"
+        },
+        "qwen3.6-max-preview": {
+          "name": "qwen3.6-max-preview",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 65536
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2026-04-20"
+        },
+        "qwen3.6-plus": {
+          "name": "qwen3.6-plus",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 64000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2026-04-02"
+        },
+        "qwen3.6-plus-2026-04-02": {
+          "name": "qwen3.6-plus-2026-04-02"
+        },
+        "qwen3.7-max": {
+          "name": "qwen3.7-max",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 65536
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2026-05-21"
+        },
+        "qwen3.7-max-2026-05-17": {
+          "name": "qwen3.7-max-2026-05-17"
+        },
+        "qwen3.7-max-2026-05-20": {
+          "name": "qwen3.7-max-2026-05-20"
+        },
+        "qwen3.7-max-2026-06-08": {
+          "name": "qwen3.7-max-2026-06-08"
+        },
+        "qwen3.7-max-preview": {
+          "name": "qwen3.7-max-preview"
+        },
+        "qwen3.7-plus": {
+          "name": "qwen3.7-plus",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 64000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen3.7-plus",
+          "release_date": "2026-06-02"
+        },
+        "qwen3.7-plus-2026-05-26": {
+          "name": "qwen3.7-plus-2026-05-26"
+        },
+        "qwentype-api-dingtalk": {
+          "name": "qwentype-api-dingtalk"
+        },
+        "qwq-plus": {
+          "name": "qwq-plus",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 131072,
+            "output": 8192
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "qwen",
+          "release_date": "2025-03-05"
+        },
+        "siliconflow/deepseek-r1-0528": {
+          "name": "siliconflow/deepseek-r1-0528",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 164000,
+            "output": 164000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek-thinking",
+          "release_date": "2025-05-28"
+        },
+        "siliconflow/deepseek-v3-0324": {
+          "name": "siliconflow/deepseek-v3-0324",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 163840,
+            "output": 163840
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek",
+          "release_date": "2024-12-26"
+        },
+        "siliconflow/deepseek-v3.1-terminus": {
+          "name": "siliconflow/deepseek-v3.1-terminus",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 164000,
+            "output": 164000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek",
+          "release_date": "2025-09-29"
+        },
+        "siliconflow/deepseek-v3.2": {
+          "name": "siliconflow/deepseek-v3.2",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 163840,
+            "output": 163840
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek",
+          "release_date": "2025-12-01"
+        },
+        "sre-gpu-auto-handle": {
+          "name": "sre-gpu-auto-handle"
+        },
+        "tongyi-xiaomi-analysis-flash": {
+          "name": "tongyi-xiaomi-analysis-flash"
+        },
+        "tongyi-xiaomi-analysis-pro": {
+          "name": "tongyi-xiaomi-analysis-pro"
+        },
+        "vanchin/deepseek-ocr": {
+          "name": "vanchin/deepseek-ocr",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 8192,
+            "output": 8192
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": false,
+          "release_date": "2025-10-24"
+        },
+        "vanchin/deepseek-r1": {
+          "name": "vanchin/deepseek-r1",
+          "attachment": true,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 384000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek-thinking",
+          "release_date": "2025-12-01"
+        },
+        "vanchin/deepseek-v3": {
+          "name": "vanchin/deepseek-v3",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 164000,
+            "output": 164000
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek",
+          "release_date": "2024-12-26"
+        },
+        "vanchin/deepseek-v3.1-terminus": {
+          "name": "vanchin/deepseek-v3.1-terminus",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 164000,
+            "output": 164000
+          },
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "family": "deepseek",
+          "release_date": "2025-09-29"
+        },
+        "vanchin/deepseek-v3.2-think": {
+          "name": "vanchin/deepseek-v3.2-think"
+        },
+        "wan2.7-image": {
+          "name": "wan2.7-image",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "image"
+            ]
+          },
+          "limit": {
+            "context": 8192,
+            "output": 0
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": false,
+          "release_date": "2026-05-29"
+        },
+        "wan2.7-image-pro": {
+          "name": "wan2.7-image-pro",
+          "attachment": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "image"
+            ]
+          },
+          "limit": {
+            "context": 8192,
+            "output": 0
+          },
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": false,
+          "release_date": "2026-05-29"
+        },
+        "z-image-turbo": {
+          "name": "z-image-turbo"
+        }
+      }
+    }
+  },
+  "instructions": [
+    "instructions/public-preview.md"
+  ]
+}

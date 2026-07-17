@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>创新业务看板</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { font-size: 16px; }
+    body { font-family: 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif; background: #F7F7F8; color: #0B0D0F; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    ul, ol { list-style: none; }
+    a { text-decoration: none; color: inherit; }
+    button { border: none; background: none; font-family: inherit; cursor: pointer; }
+
+    :root {
+      --brand: #0073E5; --brand-light: #E6F2FF; --brand-dark: #0052A3;
+      --text-5: #0B0D0F; --text-4: #576675; --text-3: #8A99A8; --text-1: #FFFFFF;
+      --fill-1: #F7F7F8; --fill-2: #F1F1F4; --white: #FFFFFF;
+      --success: #2EB82E; --danger: #F53D3D; --divider: #F0F0F0;
+      --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px;
+      --din: 'Inter', 'DIN Alternate', 'Helvetica Neue', sans-serif;
+    }
+
+    .page { max-width: 430px; margin: 0 auto; min-height: 100vh; background: #F7F7F8; position: relative; }
+
+    /* 顶部导航栏 */
+    .nav-bar { height: 44px; display: flex; align-items: center; justify-content: center; background: var(--white); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--divider); }
+    .nav-bar .back { position: absolute; left: 16px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+    .nav-bar .back svg { width: 20px; height: 20px; }
+    .nav-bar .title { font-size: 17px; font-weight: 600; color: var(--text-5); }
+
+    /* Banner 区域 */
+    .banner { background: linear-gradient(135deg, #0073E5 0%, #0052A3 100%); padding: 20px 16px 16px; position: relative; }
+    .banner-title { font-size: 18px; font-weight: 500; color: var(--text-1); margin-bottom: 8px; }
+    .banner-time { display: inline-flex; align-items: center; gap: 4px; color: rgba(255,255,255,.8); font-size: 12px; cursor: pointer; }
+    .banner-time svg { width: 14px; height: 14px; }
+    .banner-nav { display: flex; gap: 8px; margin-top: 16px; }
+    .banner-nav-btn { flex: 1; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 999px; font-size: 14px; cursor: pointer; transition: all .2s; white-space: nowrap; }
+    .banner-nav-btn.active { background: var(--white); color: var(--brand); font-weight: 500; }
+    .banner-nav-btn:not(.active) { background: rgba(255,255,255,.2); color: var(--text-1); }
+
+    /* 分类汇总表格 */
+    .summary-table-card { background: var(--white); border-radius: 8px; margin: 12px 16px; overflow: hidden; }
+    .summary-table-card .card-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 8px; }
+    .summary-table-card .card-title { font-size: 14px; font-weight: 500; color: var(--text-5); }
+    .summary-table-card .card-unit { font-size: 11px; color: var(--text-3); }
+    .summary-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .summary-table-scroll::-webkit-scrollbar { display: none; }
+    .summary-table { width: 100%; border-collapse: collapse; min-width: 320px; }
+    .summary-table th { background: var(--brand-light); font-size: 11px; font-weight: 400; color: var(--text-4); padding: 8px 6px; text-align: center; white-space: nowrap; }
+    .summary-table td { font-size: 13px; color: var(--text-5); padding: 11px 6px; text-align: center; border-bottom: 1px solid var(--divider); white-space: nowrap; }
+    .summary-table td:first-child { text-align: left; padding-left: 16px; font-family: inherit; }
+    .summary-table td.num { font-family: var(--din); font-weight: 500; }
+    .summary-table tr.total-row td { font-weight: 700; background: var(--fill-1); border-bottom: none; }
+    .summary-table tr.total-row td:first-child { padding-left: 16px; }
+    .text-up { color: var(--success); }
+    .text-down { color: var(--danger); }
+    .text-zero { color: var(--text-3); }
+    .new-tag { color: var(--brand); font-weight: 500; font-size: 12px; }
+
+    /* 组织层级页签 */
+    .org-switch { display: flex; margin: 0 16px 12px; border: 1px solid var(--brand); border-radius: 4px; overflow: hidden; }
+    .org-switch-item { flex: 1; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer; transition: all .2s; }
+    .org-switch-item.active { background: var(--brand); color: var(--text-1); font-weight: 500; }
+    .org-switch-item:not(.active) { color: var(--brand); }
+    .org-switch-item.disabled { color: var(--text-3); cursor: not-allowed; }
+    .org-switch-item.disabled ~ .org-switch-item, .org-switch-item.disabled { border-color: var(--divider); }
+
+    /* 组织排名表格 */
+    .rank-table-card { background: var(--white); border-radius: 8px; margin: 0 16px 16px; overflow: hidden; }
+    .rank-table-card .card-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 8px; }
+    .rank-table-card .card-title { font-size: 14px; font-weight: 500; color: var(--text-5); }
+    .rank-table-card .card-unit { font-size: 11px; color: var(--text-3); }
+    .rank-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; position: relative; }
+    .rank-table-scroll::-webkit-scrollbar { display: none; }
+    .rank-table { width: 100%; border-collapse: collapse; min-width: 480px; }
+    .rank-table th { background: var(--brand-light); font-size: 11px; font-weight: 400; color: var(--text-4); padding: 8px 6px; text-align: center; white-space: nowrap; position: sticky; top: 0; z-index: 5; }
+    .rank-table th:first-child { position: sticky; left: 0; z-index: 6; text-align: left; padding-left: 12px; min-width: 96px; }
+    .rank-table td { font-size: 13px; color: var(--text-5); padding: 10px 6px; text-align: center; border-bottom: 1px solid var(--divider); white-space: nowrap; font-family: var(--din); }
+    .rank-table td:first-child { position: sticky; left: 0; z-index: 4; text-align: left; padding-left: 12px; background: var(--white); font-family: inherit; min-width: 96px; }
+    .rank-table tr.total-row td { font-weight: 700; background: var(--fill-1); border-bottom: none; }
+    .rank-table tr.total-row td:first-child { background: var(--fill-1); }
+    .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 600; margin-right: 6px; font-family: var(--din); }
+    .rank-badge.top3 { background: var(--brand); color: var(--text-1); }
+    .rank-badge.normal { background: var(--fill-2); color: var(--text-4); }
+    .org-name { font-size: 13px; color: var(--text-5); }
+    .progress-bar { height: 6px; background: var(--fill-2); border-radius: 3px; overflow: hidden; width: 60px; margin: 0 auto; }
+    .progress-fill { height: 100%; background: var(--brand); border-radius: 3px; transition: width .3s ease; }
+    .progress-text { font-size: 11px; color: var(--text-3); margin-top: 2px; font-family: var(--din); }
+
+    /* 时间选择器弹窗 */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 200; opacity: 0; visibility: hidden; transition: all .3s; }
+    .modal-overlay.show { opacity: 1; visibility: visible; }
+    .modal-drawer { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 430px; background: var(--white); border-radius: 12px 12px 0 0; padding: 20px 16px 32px; z-index: 201; transition: transform .3s ease; }
+    .modal-drawer.show { transform: translateX(-50%) translateY(0); }
+    .modal-title { font-size: 16px; font-weight: 500; color: var(--text-5); margin-bottom: 16px; text-align: center; }
+    .modal-section-label { font-size: 13px; color: var(--text-4); margin-bottom: 8px; }
+    .modal-pill-group { display: flex; gap: 8px; margin-bottom: 20px; }
+    .modal-pill { flex: 1; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 999px; font-size: 14px; cursor: pointer; transition: all .2s; border: 1px solid var(--divider); }
+    .modal-pill.active { background: var(--brand-light); color: var(--brand); font-weight: 500; border-color: var(--brand); }
+    .modal-pill:not(.active) { color: var(--text-4); }
+    .date-picker { display: flex; gap: 8px; margin-bottom: 20px; }
+    .date-select { flex: 1; height: 40px; border: 1px solid var(--divider); border-radius: 8px; padding: 0 12px; font-size: 14px; color: var(--text-5); background: var(--white); -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%238A99A8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+    .modal-actions { display: flex; gap: 12px; }
+    .modal-btn { flex: 1; height: 44px; border-radius: 22px; font-size: 16px; font-weight: 500; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .modal-btn.cancel { background: var(--fill-2); color: var(--text-5); }
+    .modal-btn.confirm { background: var(--brand); color: var(--text-1); }
+
+    /* Toast */
+    .toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,.7); color: #fff; padding: 10px 20px; border-radius: 8px; font-size: 14px; z-index: 300; opacity: 0; visibility: hidden; transition: all .3s; }
+    .toast.show { opacity: 1; visibility: visible; }
+
+    /* 空状态 */
+    .empty-state { text-align: center; padding: 40px 16px; color: var(--text-3); }
+    .empty-state svg { width: 48px; height: 48px; margin-bottom: 12px; opacity: .5; }
+
+    .content-area { padding-bottom: 24px; }
+    .bottom-hint { text-align: center; padding: 16px; color: var(--text-3); font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- 顶部导航栏 -->
+    <div class="nav-bar">
+      <div class="back" onclick="history.back()">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#576675" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <span class="title">创新业务看板</span>
+    </div>
+
+    <!-- Banner 区域 -->
+    <div class="banner">
+      <div class="banner-title">创新业务看板</div>
+      <div class="banner-time" id="bannerTime" onclick="openTimePicker()">
+        <span id="timeLabel">2026年6月</span>
+        <svg viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="rgba(255,255,255,.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="banner-nav">
+        <div class="banner-nav-btn active" data-view="overall" onclick="switchView('overall')">整体</div>
+        <div class="banner-nav-btn" data-view="oem" onclick="switchView('oem')">代工类</div>
+        <div class="banner-nav-btn" data-view="specialty" onclick="switchView('specialty')">特色产品</div>
+        <div class="banner-nav-btn" data-view="draught" onclick="switchView('draught')">桶啤</div>
+      </div>
+    </div>
+
+    <!-- 内容区 -->
+    <div class="content-area">
+      <!-- 分类汇总表格 -->
+      <div class="summary-table-card">
+        <div class="card-header">
+          <span class="card-title" id="summaryTitle">创新业务分类汇总</span>
+          <span class="card-unit">单位：千升(kL)</span>
+        </div>
+        <div class="summary-table-scroll">
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th>分类</th>
+                <th>当期</th>
+                <th>同期</th>
+                <th>同比增减</th>
+                <th>同比增幅</th>
+              </tr>
+            </thead>
+            <tbody id="summaryBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 组织层级页签 -->
+      <div class="org-switch">
+        <div class="org-switch-item disabled" data-level="hq" onclick="switchOrgLevel('hq')">总部</div>
+        <div class="org-switch-item active" data-level="region" onclick="switchOrgLevel('region')">区域</div>
+        <div class="org-switch-item" data-level="mc" onclick="switchOrgLevel('mc')">营销中心</div>
+        <div class="org-switch-item" data-level="factory" onclick="switchOrgLevel('factory')">工厂</div>
+      </div>
+
+      <!-- 组织排名表格 -->
+      <div class="rank-table-card">
+        <div class="card-header">
+          <span class="card-title" id="rankTitle">分区域排名</span>
+          <span class="card-unit">单位：千升(kL)</span>
+        </div>
+        <div class="rank-table-scroll">
+          <table class="rank-table">
+            <thead>
+              <tr>
+                <th>组织</th>
+                <th>当期</th>
+                <th>同期</th>
+                <th>同比增减</th>
+                <th>同比增幅</th>
+                <th>增量贡献</th>
+              </tr>
+            </thead>
+            <tbody id="rankBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bottom-hint">— 已全部加载 —</div>
+    </div>
+  </div>
+
+  <!-- 时间选择器 -->
+  <div class="modal-overlay" id="timeOverlay" onclick="closeTimePicker()"></div>
+  <div class="modal-drawer" id="timeDrawer">
+    <div class="modal-title">选择时间</div>
+    <div class="modal-section-label">时间口径</div>
+    <div class="modal-pill-group">
+      <div class="modal-pill" data-period="day" onclick="selectPeriod('day')">日</div>
+      <div class="modal-pill active" data-period="month" onclick="selectPeriod('month')">月</div>
+      <div class="modal-pill" data-period="year" onclick="selectPeriod('year')">年</div>
+    </div>
+    <div class="modal-section-label">具体日期</div>
+    <div class="date-picker" id="datePicker"></div>
+    <div class="modal-actions">
+      <div class="modal-btn cancel" onclick="closeTimePicker()">取消</div>
+      <div class="modal-btn confirm" onclick="confirmTime()">确认</div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ========== 数据 ==========
+    const viewConfig = {
+      overall: { title: '创新业务分类汇总', rankTitle: '创新业务', summary: [
+        { name: '代工类', current: 62580.0, same: 55230.0 },
+        { name: '特色产品', current: 48920.0, same: 41680.0 },
+        { name: '桶啤', current: 38500.0, same: 33290.0 },
+      ]},
+      oem: { title: '代工类分类汇总', rankTitle: '代工类', summary: [
+        { name: '代加工', current: 31850.0, same: 28200.0 },
+        { name: '包销', current: 19730.0, same: 17530.0 },
+        { name: '定制', current: 11000.0, same: 9500.0 },
+      ]},
+      specialty: { title: '特色产品分类汇总', rankTitle: '特色产品', summary: [
+        { name: '小品种', current: 24680.0, same: 20500.0 },
+        { name: '贸易产品', current: 14840.0, same: 12680.0 },
+        { name: '醴', current: 9400.0, same: 8500.0 },
+      ]},
+      draught: { title: '桶啤分类汇总', rankTitle: '桶啤', summary: [
+        { name: '高档桶啤', current: 23820.0, same: 20100.0 },
+        { name: '普通桶啤', current: 14680.0, same: 13190.0 },
+      ]},
+    };
+
+    const orgData = {
+      overall: {
+        region: [
+          { name: '华东区域', current: 28560.0, same: 24200.0 },
+          { name: '华南区域', current: 25430.0, same: 22100.0 },
+          { name: '华中区域', current: 21870.0, same: 18900.0 },
+          { name: '华北区域', current: 19320.0, same: 17200.0 },
+          { name: '西南区域', current: 17650.0, same: 15800.0 },
+          { name: '西北区域', current: 12480.0, same: 10900.0 },
+          { name: '东北区域', current: 10690.0, same: 9500.0 },
+        ],
+        mc: [
+          { name: '上海营销中心', current: 12580.0, same: 10200.0 },
+          { name: '浙江营销中心', current: 9870.0, same: 8600.0 },
+          { name: '江苏营销中心', current: 9120.0, same: 7800.0 },
+          { name: '广东营销中心', current: 8650.0, same: 7400.0 },
+          { name: '湖北营销中心', current: 7430.0, same: 6200.0 },
+          { name: '四川营销中心', current: 6890.0, same: 5900.0 },
+          { name: '北京营销中心', current: 6210.0, same: 5400.0 },
+          { name: '山东营销中心', current: 5780.0, same: 4900.0 },
+          { name: '安徽营销中心', current: 4920.0, same: 4300.0 },
+          { name: '福建营销中心', current: 4350.0, same: 3800.0 },
+        ],
+        factory: [
+          { name: '上海松江工厂', current: 4820.0, same: 4100.0 },
+          { name: '杭州工厂', current: 4150.0, same: 3600.0 },
+          { name: '南京工厂', current: 3870.0, same: 3300.0 },
+          { name: '广州工厂', current: 3620.0, same: 3100.0 },
+          { name: '武汉工厂', current: 3180.0, same: 2700.0 },
+          { name: '成都工厂', current: 2940.0, same: 2500.0 },
+          { name: '北京工厂', current: 2650.0, same: 2300.0 },
+          { name: '济南工厂', current: 2480.0, same: 2100.0 },
+        ],
+      },
+      oem: {
+        region: [
+          { name: '华东区域', current: 11850.0, same: 10200.0 },
+          { name: '华南区域', current: 10320.0, same: 9100.0 },
+          { name: '华中区域', current: 8970.0, same: 7800.0 },
+          { name: '华北区域', current: 7650.0, same: 6800.0 },
+          { name: '西南区域', current: 6890.0, same: 6200.0 },
+          { name: '西北区域', current: 4920.0, same: 4300.0 },
+          { name: '东北区域', current: 4230.0, same: 3800.0 },
+        ],
+        mc: [
+          { name: '上海营销中心', current: 5280.0, same: 4500.0 },
+          { name: '浙江营销中心', current: 4150.0, same: 3600.0 },
+          { name: '江苏营销中心', current: 3820.0, same: 3300.0 },
+          { name: '广东营销中心', current: 3580.0, same: 3100.0 },
+          { name: '湖北营销中心', current: 3120.0, same: 2700.0 },
+          { name: '四川营销中心', current: 2890.0, same: 2500.0 },
+          { name: '北京营销中心', current: 2610.0, same: 2300.0 },
+          { name: '山东营销中心', current: 2380.0, same: 2100.0 },
+        ],
+        factory: [
+          { name: '上海松江工厂', current: 2080.0, same: 1800.0 },
+          { name: '杭州工厂', current: 1750.0, same: 1500.0 },
+          { name: '南京工厂', current: 1620.0, same: 1400.0 },
+          { name: '广州工厂', current: 1520.0, same: 1300.0 },
+          { name: '武汉工厂', current: 1320.0, same: 1150.0 },
+          { name: '成都工厂', current: 1210.0, same: 1050.0 },
+        ],
+      },
+      specialty: {
+        region: [
+          { name: '华东区域', current: 9280.0, same: 7600.0 },
+          { name: '华南区域', current: 8150.0, same: 6800.0 },
+          { name: '华中区域', current: 7120.0, same: 5900.0 },
+          { name: '华北区域', current: 6230.0, same: 5200.0 },
+          { name: '西南区域', current: 5640.0, same: 4700.0 },
+          { name: '西北区域', current: 3980.0, same: 3300.0 },
+          { name: '东北区域', current: 3420.0, same: 2900.0 },
+        ],
+        mc: [
+          { name: '上海营销中心', current: 4120.0, same: 3400.0 },
+          { name: '浙江营销中心', current: 3280.0, same: 2700.0 },
+          { name: '江苏营销中心', current: 3020.0, same: 2500.0 },
+          { name: '广东营销中心', current: 2850.0, same: 2350.0 },
+          { name: '湖北营销中心', current: 2480.0, same: 2050.0 },
+          { name: '四川营销中心', current: 2290.0, same: 1900.0 },
+          { name: '北京营销中心', current: 2070.0, same: 1700.0 },
+          { name: '山东营销中心', current: 1890.0, same: 1550.0 },
+        ],
+        factory: [
+          { name: '上海松江工厂', current: 1620.0, same: 1350.0 },
+          { name: '杭州工厂', current: 1380.0, same: 1150.0 },
+          { name: '南京工厂', current: 1280.0, same: 1050.0 },
+          { name: '广州工厂', current: 1200.0, same: 1000.0 },
+          { name: '武汉工厂', current: 1040.0, same: 860.0 },
+          { name: '成都工厂', current: 960.0, same: 800.0 },
+        ],
+      },
+      draught: {
+        region: [
+          { name: '华东区域', current: 7430.0, same: 6400.0 },
+          { name: '华南区域', current: 6960.0, same: 6200.0 },
+          { name: '华中区域', current: 5780.0, same: 5200.0 },
+          { name: '华北区域', current: 5440.0, same: 5200.0 },
+          { name: '西南区域', current: 5120.0, same: 4900.0 },
+          { name: '西北区域', current: 3580.0, same: 3300.0 },
+          { name: '东北区域', current: 3040.0, same: 2800.0 },
+        ],
+        mc: [
+          { name: '上海营销中心', current: 3180.0, same: 2700.0 },
+          { name: '浙江营销中心', current: 2440.0, same: 2100.0 },
+          { name: '江苏营销中心', current: 2280.0, same: 1950.0 },
+          { name: '广东营销中心', current: 2220.0, same: 1950.0 },
+          { name: '湖北营销中心', current: 1830.0, same: 1600.0 },
+          { name: '四川营销中心', current: 1710.0, same: 1500.0 },
+          { name: '北京营销中心', current: 1530.0, same: 1350.0 },
+          { name: '山东营销中心', current: 1510.0, same: 1350.0 },
+        ],
+        factory: [
+          { name: '上海松江工厂', current: 1120.0, same: 950.0 },
+          { name: '杭州工厂', current: 1020.0, same: 870.0 },
+          { name: '南京工厂', current: 970.0, same: 830.0 },
+          { name: '广州工厂', current: 900.0, same: 780.0 },
+          { name: '武汉工厂', current: 820.0, same: 700.0 },
+          { name: '成都工厂', current: 770.0, same: 650.0 },
+        ],
+      },
+    };
+
+    const orgLevelNames = { hq: '总部', region: '区域', mc: '营销中心', factory: '工厂' };
+    let currentView = 'overall';
+    let currentLevel = 'region';
+    let currentPeriod = 'month';
+    let selectedYear = 2026, selectedMonth = 6, selectedDay = 26;
+
+    // ========== 格式化函数 ==========
+    function fmtNum(n) { return n.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); }
+    function calcDiff(cur, same) { return Math.round((cur - same) * 10) / 10; }
+    function calcRate(cur, same) {
+      if (same === 0) return null;
+      return Math.round(((cur - same) / same * 100) * 10) / 10;
+    }
+    function diffClass(cur, same) {
+      const d = cur - same;
+      if (d > 0) return 'text-up';
+      if (d < 0) return 'text-down';
+      return 'text-zero';
+    }
+    function rateHtml(cur, same) {
+      if (same === 0) return '<span class="new-tag">NEW</span>';
+      const r = calcRate(cur, same);
+      if (r === null) return '<span class="new-tag">NEW</span>';
+      if (r > 0) return `<span class="text-up">↑ ${r.toFixed(1)}%</span>`;
+      if (r < 0) return `<span class="text-down">↓ ${Math.abs(r).toFixed(1)}%</span>`;
+      return '<span class="text-zero">0.0%</span>';
+    }
+    function diffHtml(cur, same) {
+      const d = calcDiff(cur, same);
+      const cls = diffClass(cur, same);
+      const sign = d > 0 ? '+' : '';
+      return `<span class="${cls}">${sign}${fmtNum(d)}</span>`;
+    }
+
+    // ========== 渲染分类汇总表格 ==========
+    function renderSummary() {
+      const cfg = viewConfig[currentView];
+      document.getElementById('summaryTitle').textContent = cfg.title;
+      const body = document.getElementById('summaryBody');
+      let html = '';
+      let totalCur = 0, totalSame = 0;
+      cfg.summary.forEach(item => {
+        totalCur += item.current;
+        totalSame += item.same;
+        html += `<tr>
+          <td>${item.name}</td>
+          <td class="num">${fmtNum(item.current)}</td>
+          <td class="num">${fmtNum(item.same)}</td>
+          <td class="num">${diffHtml(item.current, item.same)}</td>
+          <td class="num">${rateHtml(item.current, item.same)}</td>
+        </tr>`;
+      });
+      html += `<tr class="total-row">
+        <td>合计</td>
+        <td class="num">${fmtNum(totalCur)}</td>
+        <td class="num">${fmtNum(totalSame)}</td>
+        <td class="num">${diffHtml(totalCur, totalSame)}</td>
+        <td class="num">${rateHtml(totalCur, totalSame)}</td>
+      </tr>`;
+      body.innerHTML = html;
+    }
+
+    // ========== 渲染组织排名表格 ==========
+    function renderRank() {
+      const cfg = viewConfig[currentView];
+      document.getElementById('rankTitle').textContent = '分' + orgLevelNames[currentLevel] + '排名';
+      const body = document.getElementById('rankBody');
+      const data = (orgData[currentView] && orgData[currentView][currentLevel]) || [];
+
+      if (data.length === 0) {
+        body.innerHTML = `<tr><td colspan="6" style="padding:40px;text-align:center;color:var(--text-3);">暂无数据</td></tr>`;
+        return;
+      }
+
+      const maxCur = Math.max(...data.map(d => d.current));
+      let html = '';
+      let totalCur = 0, totalSame = 0;
+      data.forEach((item, idx) => {
+        totalCur += item.current;
+        totalSame += item.same;
+        const rank = idx + 1;
+        const badgeCls = rank <= 3 ? 'top3' : 'normal';
+        const pct = maxCur > 0 ? Math.round(item.current / maxCur * 100) : 0;
+        html += `<tr>
+          <td><span class="rank-badge ${badgeCls}">${rank}</span><span class="org-name">${item.name}</span></td>
+          <td>${fmtNum(item.current)}</td>
+          <td>${fmtNum(item.same)}</td>
+          <td>${diffHtml(item.current, item.same)}</td>
+          <td>${rateHtml(item.current, item.same)}</td>
+          <td>
+            <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+            <div class="progress-text">${pct}%</div>
+          </td>
+        </tr>`;
+      });
+      html += `<tr class="total-row">
+        <td>合计</td>
+        <td>${fmtNum(totalCur)}</td>
+        <td>${fmtNum(totalSame)}</td>
+        <td>${diffHtml(totalCur, totalSame)}</td>
+        <td>${rateHtml(totalCur, totalSame)}</td>
+        <td>—</td>
+      </tr>`;
+      body.innerHTML = html;
+    }
+
+    // ========== 视角切换 ==========
+    function switchView(view) {
+      currentView = view;
+      document.querySelectorAll('.banner-nav-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.view === view);
+      });
+      renderSummary();
+      renderRank();
+    }
+
+    // ========== 组织层级切换 ==========
+    function switchOrgLevel(level) {
+      const el = document.querySelector(`.org-switch-item[data-level="${level}"]`);
+      if (el.classList.contains('disabled')) return;
+      currentLevel = level;
+      document.querySelectorAll('.org-switch-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.level === level);
+      });
+      renderRank();
+    }
+
+    // ========== 时间选择器 ==========
+    function openTimePicker() {
+      document.getElementById('timeOverlay').classList.add('show');
+      document.getElementById('timeDrawer').classList.add('show');
+      renderDatePicker();
+    }
+    function closeTimePicker() {
+      document.getElementById('timeOverlay').classList.remove('show');
+      document.getElementById('timeDrawer').classList.remove('show');
+    }
+    function selectPeriod(period) {
+      currentPeriod = period;
+      document.querySelectorAll('.modal-pill').forEach(p => {
+        p.classList.toggle('active', p.dataset.period === period);
+      });
+      renderDatePicker();
+    }
+    function renderDatePicker() {
+      const picker = document.getElementById('datePicker');
+      if (currentPeriod === 'day') {
+        picker.innerHTML = `
+          <select class="date-select" id="pickYear">${yearOptions(2024,2026)}</select>
+          <select class="date-select" id="pickMonth">${monthOptions()}</select>
+          <select class="date-select" id="pickDay">${dayOptions()}</select>`;
+      } else if (currentPeriod === 'month') {
+        picker.innerHTML = `
+          <select class="date-select" id="pickYear">${yearOptions(2024,2026)}</select>
+          <select class="date-select" id="pickMonth">${monthOptions()}</select>`;
+      } else {
+        picker.innerHTML = `
+          <select class="date-select" id="pickYear">${yearOptions(2024,2026)}</select>`;
+      }
+      const yEl = document.getElementById('pickYear'); if (yEl) yEl.value = selectedYear;
+      const mEl = document.getElementById('pickMonth'); if (mEl) mEl.value = selectedMonth;
+      const dEl = document.getElementById('pickDay'); if (dEl) dEl.value = selectedDay;
+    }
+    function yearOptions(start, end) {
+      let opts = '';
+      for (let y = end; y >= start; y--) opts += `<option value="${y}">${y}年</option>`;
+      return opts;
+    }
+    function monthOptions() {
+      let opts = '';
+      for (let m = 1; m <= 12; m++) opts += `<option value="${m}">${m}月</option>`;
+      return opts;
+    }
+    function dayOptions() {
+      let opts = '';
+      for (let d = 1; d <= 31; d++) opts += `<option value="${d}">${d}日</option>`;
+      return opts;
+    }
+    function confirmTime() {
+      const yEl = document.getElementById('pickYear'); if (yEl) selectedYear = parseInt(yEl.value);
+      const mEl = document.getElementById('pickMonth'); if (mEl) selectedMonth = parseInt(mEl.value);
+      const dEl = document.getElementById('pickDay'); if (dEl) selectedDay = parseInt(dEl.value);
+      let label = '';
+      if (currentPeriod === 'day') label = `${selectedYear}-${String(selectedMonth).padStart(2,'0')}-${String(selectedDay).padStart(2,'0')}`;
+      else if (currentPeriod === 'month') label = `${selectedYear}年${selectedMonth}月`;
+      else label = `${selectedYear}年`;
+      document.getElementById('timeLabel').textContent = label;
+      closeTimePicker();
+      showToast('数据已刷新');
+    }
+
+    // ========== Toast ==========
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 1500);
+    }
+
+    // ========== 初始化 ==========
+    renderSummary();
+    renderRank();
+  </script>
+</body>
+</html>

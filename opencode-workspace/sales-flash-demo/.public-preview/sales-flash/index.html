@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>销量快报</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="top-nav">
+        <div class="nav-left">
+            <span class="back-arrow">←</span>
+            <span class="nav-title">销量快报</span>
+        </div>
+        <div class="nav-right">
+            <span class="more-dots">···</span>
+        </div>
+    </header>
+
+    <!-- 一级维度标签 -->
+    <nav class="dimension-tabs">
+        <div class="tab-scroll">
+            <button class="tab-btn active" data-dimension="grade">分档次</button>
+            <button class="tab-btn" data-dimension="brand">分品牌</button>
+            <button class="tab-btn" data-dimension="main">分主力品种</button>
+            <button class="tab-btn" data-dimension="other">其他</button>
+        </div>
+    </nav>
+
+    <!-- Banner -->
+    <section class="banner">
+        <div class="banner-content">
+            <h1 class="banner-title" id="bannerTitle">全国普及及以上生意表现</h1>
+            <div class="banner-date">
+                <span id="bannerDate">2025年2月</span>
+                <span class="nav-icon">[导航]</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 时间维度切换 -->
+    <section class="time-tabs">
+        <button class="time-btn active" data-time="day">当日</button>
+        <button class="time-btn" data-time="month">月累计</button>
+        <button class="time-btn" data-time="year">年累计</button>
+    </section>
+
+    <!-- 数据汇总卡片 -->
+    <section class="summary-card">
+        <div class="summary-label">🏷 普高及以上销量表现</div>
+        <div class="summary-value" id="summaryValue">1,663,393 KL</div>
+        <div class="summary-metrics">
+            <span class="metric">
+                <span class="metric-label">同比增减</span>
+                <span class="metric-value positive" id="summaryChange">+90,134</span>
+            </span>
+            <span class="metric">
+                <span class="metric-label">同比增幅</span>
+                <span class="metric-value positive" id="summaryGrowth">6%↑</span>
+            </span>
+        </div>
+    </section>
+
+    <!-- 组织层级切换 -->
+    <section class="org-tabs">
+        <button class="org-btn active" data-org="division">事业部</button>
+        <button class="org-btn" data-org="center">营销中心</button>
+    </section>
+
+    <!-- 数据表格 -->
+    <section class="data-table-section">
+        <table class="data-table" id="dataTable">
+            <thead>
+                <tr>
+                    <th class="col-rank">排名</th>
+                    <th class="col-org">组织</th>
+                    <th class="col-current">当期</th>
+                    <th class="col-period">同期</th>
+                    <th class="col-change">同比增减</th>
+                    <th class="col-growth">同比增幅</th>
+                    <th class="col-contribution">增量贡献</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- 数据行由JS生成 -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 底部引导 -->
+    <footer class="bottom-guide">
+        <span>↑ 上滑查看【次高分组织销量表现】<span id="pageIndicator">1/4</span></span>
+    </footer>
+
+    <!-- 🏠 快捷按钮 -->
+    <div class="fab-button" id="fabButton">
+        🏠
+    </div>
+    <div class="fab-menu" id="fabMenu">
+        <div class="fab-menu-item" data-action="help">数据说明</div>
+        <div class="fab-menu-item" data-action="feedback">意见反馈</div>
+        <div class="fab-menu-item" data-action="back">返回工作台</div>
+    </div>
+
+    <!-- 下拉刷新指示器 -->
+    <div class="pull-refresh" id="pullRefresh">
+        <span>↓ 下拉刷新</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
